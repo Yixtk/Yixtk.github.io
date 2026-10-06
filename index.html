@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emily Cui</title>
+<meta name="description" content="Emily Cui — Computer Science at NYU. I build AI systems people can trust.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f4;
+    --surface: #ffffff;
+    --text: #1f1d1a;
+    --muted: #6b665e;
+    --line: #e7e2d9;
+    --accent: #c2410c;
+    --accent-soft: #fdeee4;
+    --chip: #f1ede6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151412;
+      --surface: #1d1b19;
+      --text: #ece8e1;
+      --muted: #a39d93;
+      --line: #2f2c28;
+      --accent: #fb923c;
+      --accent-soft: #2c1d12;
+      --chip: #26231f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151412;
+    --surface: #1d1b19;
+    --text: #ece8e1;
+    --muted: #a39d93;
+    --line: #2f2c28;
+    --accent: #fb923c;
+    --accent-soft: #2c1d12;
+    --chip: #26231f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    transition: background .25s, color .25s;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  /* nav */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-family: "Fraunces", serif; font-weight: 600; font-size: 20px; text-decoration: none; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { text-decoration: none; font-size: 14px; color: var(--muted); transition: color .15s; }
+  .nav-links a:hover { color: var(--text); }
+  .theme-btn {
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    width: 34px; height: 34px; cursor: pointer; color: var(--text);
+    display: grid; place-items: center;
+  }
+  .theme-btn svg { width: 16px; height: 16px; }
+
+  /* hero */
+  .hero { padding-top: 96px; padding-bottom: 72px; }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent);
+    letter-spacing: .02em; margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 4px color-mix(in srgb, #22c55e 20%, transparent); }
+  h1 {
+    font-family: "Fraunces", serif; font-weight: 400;
+    font-size: clamp(40px, 7vw, 64px); line-height: 1.08; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-size: 19px; color: var(--muted); max-width: 620px; margin-bottom: 32px; }
+  .lede strong { color: var(--text); font-weight: 500; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 500;
+    text-decoration: none; border: 1px solid var(--line); background: var(--surface);
+    transition: transform .15s, border-color .15s;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--muted); }
+  .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* sections */
+  section { padding-top: 56px; padding-bottom: 56px; border-top: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; }
+  .sec-num { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent); }
+  h2 { font-family: "Fraunces", serif; font-weight: 600; font-size: 28px; letter-spacing: -0.01em; }
+
+  /* now */
+  .now-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .now-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px;
+  }
+  .now-card .label { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .now-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; line-height: 1.35; }
+  .now-card p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* experience */
+  .job { display: grid; grid-template-columns: 170px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px dashed var(--line); }
+  .job:last-child { border-bottom: none; }
+  .job .when { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); padding-top: 3px; }
+  .job h3 { font-size: 17px; font-weight: 600; line-height: 1.4; }
+  .job .org { color: var(--accent); }
+  .job .role { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+  .job ul { list-style: none; }
+  .job li { position: relative; padding-left: 18px; font-size: 15px; margin-bottom: 6px; }
+  .job li::before { content: ""; position: absolute; left: 0; top: 11px; width: 8px; height: 1.5px; background: var(--accent); }
+
+  /* projects */
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .proj {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px;
+    display: flex; flex-direction: column; text-decoration: none;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  a.proj:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 30px -15px rgba(0,0,0,.25); }
+  .proj .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .proj .kind { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--accent); }
+  .proj .arrow { color: var(--muted); transition: transform .2s; }
+  a.proj:hover .arrow { transform: translate(3px, -3px); color: var(--accent); }
+  .proj h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .proj p { font-size: 14.5px; color: var(--muted); flex: 1; margin-bottom: 16px; }
+  .stat { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 12px; background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 6px; margin-bottom: 12px; align-self: flex-start; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; background: var(--chip); color: var(--muted); padding: 3px 9px; border-radius: 999px; }
+
+  /* skills */
+  .skills { display: grid; grid-template-columns: 170px 1fr; row-gap: 16px; column-gap: 24px; }
+  .skills dt { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); padding-top: 4px; }
+  .skills dd { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skills dd span { font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); padding: 3px 11px; border-radius: 999px; }
+
+  /* contact */
+  .contact-box {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 40px; text-align: center;
+  }
+  .contact-box h2 { font-size: 32px; margin-bottom: 10px; }
+  .contact-box p { color: var(--muted); margin-bottom: 24px; }
+  .contact-box .cta { justify-content: center; }
+
+  footer { padding: 32px 0 48px; text-align: center; font-size: 13px; color: var(--muted); }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .nav-links a.hide-sm { display: none; }
+    .hero { padding-top: 64px; padding-bottom: 48px; }
+    .lede { font-size: 17px; }
+    .now-grid, .proj-grid { grid-template-columns: 1fr; }
+    .job, .skills { grid-template-columns: 1fr; gap: 6px; }
+    .skills dd { margin-bottom: 10px; }
+    .contact-box { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="logo">Emily<span>.</span></a>
+    <div class="nav-links">
+      <a href="#experience" class="hide-sm">Experience</a>
+      <a href="#projects" class="hide-sm">Projects</a>
+      <a href="#contact">Contact</a>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <header class="hero wrap">
+    <div class="eyebrow"><span class="dot"></span>Seeking Summer 2027 SWE / AI Engineering internships</div>
+    <h1>Hi, I'm Emily. I build AI<br>that people can <em>trust</em>.</h1>
+    <p class="lede">
+      I study <strong>Computer Science at NYU Tandon</strong> and work across AI engineering,
+      simulation, and data science. I care about the unglamorous parts that make AI
+      dependable: guardrails, tests, and keeping a human in the loop where it matters.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="mailto:yc7458@nyu.edu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Email me
+      </a>
+      <a class="btn" href="https://github.com/Yixtk" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+        GitHub
+      </a>
+      <a class="btn" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </header>
+
+  <section class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Right now</h2></div>
+    <div class="now-grid">
+      <div class="now-card">
+        <div class="label">AI ENGINEERING</div>
+        <h3>Building LLM tools at JGM Innovation</h3>
+        <p>Including a web app that helps teachers in Peru plan lessons and prepare for certification.</p>
+      </div>
+      <div class="now-card">
+        <div class="label">RESEARCH</div>
+        <h3>Autonomous-driving safety at C2SMART</h3>
+        <p>Designing a work-zone benchmark in CARLA and studying PPO, TD3, and SAC.</p>
+      </div>
+      <div class="now-card">
+        <div class="label">RESEARCH</div>
+        <h3>Cities &amp; mental health at CUSP</h3>
+        <p>Causal discovery on what drives depression across U.S. metro areas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Experience</h2></div>
+
+    <div class="job">
+      <div class="when">May 2026 — Now</div>
+      <div>
+        <h3><span class="org">JGM Innovation</span></h3>
+        <div class="role">AI Engineer Intern · New York</div>
+        <ul>
+          <li>Develop Eclipse, an internal AI assistant (FastAPI, Azure) that automates staff workflows like drafting donor emails and reviewing ad performance.</li>
+          <li>Designed a five-layer safety system — blocklists, Azure Content Safety, prompt-injection detection, image validation, token inspection — with 30+ unit tests at near-100% branch coverage.</li>
+          <li>Kept ad metrics in deterministic code and gave the LLM only judgment calls, so reports never contain invented numbers; donor emails go out only after per-message human review.</li>
+          <li>Evaluated four small language models (Qwen3, Phi-4-mini, Llama 3.2, Gemma 3) for an offline classroom deployment in Peru.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">Jun 2025 — Aug 2025<br>Jun 2026 — Now</div>
+      <div>
+        <h3><span class="org">C2SMART Transportation Center, NYU</span></h3>
+        <div class="role">Undergraduate Research Assistant</div>
+        <ul>
+          <li>Built a modified Unreal Engine and the CARLA C++ simulation core from source, and exposed it to Python through pybind11 bindings.</li>
+          <li>Designed custom CARLA scenarios, such as pedestrian behavior models, for a work-zone driving-safety benchmark.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">Jun 2026 — Now</div>
+      <div>
+        <h3><span class="org">Center for Urban Science + Progress, NYU</span></h3>
+        <div class="role">Independent Researcher</div>
+        <ul>
+          <li>Extending a peer-reviewed urban-scaling study of depression across 826 U.S. metro areas, with a pandas pipeline over four government data sources.</li>
+          <li>Added commute time and mode as new predictors; applied eigenvector spatial filtering and PC-algorithm causal discovery.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">Jul 2026 — Aug 2026</div>
+      <div>
+        <h3><span class="org">Public Interest Technology, NYU</span></h3>
+        <div class="role">Student Technical Assistant</div>
+        <ul>
+          <li>Analyzed a 267-response, 18-school survey and built a Chart.js dashboard, then turned it into deliverables for students, faculty, and leadership.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">Oct 2025 — Jan 2026</div>
+      <div>
+        <h3><span class="org">Epsilab</span></h3>
+        <div class="role">Full Stack Developer Intern</div>
+        <ul>
+          <li>Built a secure broker-account connection flow in React and TypeScript to support live trading.</li>
+          <li>Built a trading analytics dashboard with rolling volatility, drawdown, and Sharpe ratio.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="when">Feb 2026 — Now</div>
+      <div>
+        <h3><span class="org">NYU TRIO Scholar Program</span></h3>
+        <div class="role">Peer Tutor</div>
+        <ul>
+          <li>Tutor students one-on-one in probability, discrete math, and intro programming.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Projects</h2></div>
+    <div class="proj-grid">
+      <div class="proj">
+        <div class="top"><span class="kind">MACHINE LEARNING</span></div>
+        <h3>Airbnb Albany: Occupancy Prediction</h3>
+        <span class="stat">AUC 0.77 → 0.90</span>
+        <p>A LightGBM + logistic regression ensemble predicting booking likelihood. Found and fixed a test-set leakage bug in early stopping with a time-ordered validation split.</p>
+        <div class="tags"><span class="tag">LightGBM</span><span class="tag">scikit-learn</span><span class="tag">pandas</span></div>
+      </div>
+      <a class="proj" href="https://github.com/Yixtk/UBS_FinAI" target="_blank" rel="noopener">
+        <div class="top"><span class="kind">LLM · FINANCE</span><span class="arrow">↗</span></div>
+        <h3>UBS Program: Term Sheet AI</h3>
+        <p>Extracts structured JSON from derivative term-sheet PDFs with an LLM, validates it in three layers, and feeds Python payoff engines for structured products.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">LLM APIs</span><span class="tag">JSON Schema</span></div>
+      </a>
+      <a class="proj" href="https://github.com/Yixtk/PantryCycle" target="_blank" rel="noopener">
+        <div class="top"><span class="kind">FULL STACK · ML</span><span class="arrow">↗</span></div>
+        <h3>PantryCycle</h3>
+        <span class="stat">92.9% test accuracy</span>
+        <p>A web app that recommends recipes by menstrual-cycle phase, with a Python data-cleaning pipeline and a decision-tree classifier.</p>
+        <div class="tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span><span class="tag">Vercel</span></div>
+      </a>
+      <a class="proj" href="https://yixtk.github.io/NYC-Rent-Predictor/" target="_blank" rel="noopener">
+        <div class="top"><span class="kind">SIMULATION</span><span class="arrow">↗</span></div>
+        <h3>NYC Rent Predictor</h3>
+        <p>A Monte Carlo tool that runs 10,000 simulations to estimate rent by borough, unit type, and move-in month.</p>
+        <div class="tags"><span class="tag">JavaScript</span><span class="tag">Monte Carlo</span></div>
+      </a>
+      <a class="proj" href="https://github.com/Yixtk/Lighthouse" target="_blank" rel="noopener">
+        <div class="top"><span class="kind">GAME</span><span class="arrow">↗</span></div>
+        <h3>Lighthouse</h3>
+        <p>A p5.js survival game: you are the last lighthouse keeper, fighting off sea monsters and guiding ships to shore until dawn.</p>
+        <div class="tags"><span class="tag">p5.js</span><span class="tag">Game design</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap reveal">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Toolbox</h2></div>
+    <dl class="skills">
+      <dt>Languages</dt>
+      <dd><span>Python</span><span>C++</span><span>TypeScript</span><span>JavaScript</span><span>SQL</span></dd>
+      <dt>AI &amp; ML</dt>
+      <dd><span>LLM pipelines</span><span>Guardrails</span><span>Model evaluation</span><span>scikit-learn</span><span>LightGBM</span><span>Causal inference</span></dd>
+      <dt>Backend &amp; Cloud</dt>
+      <dd><span>FastAPI</span><span>Azure</span><span>PostgreSQL</span><span>REST APIs</span><span>pytest</span></dd>
+      <dt>Frontend</dt>
+      <dd><span>React</span><span>HTML/CSS</span><span>Chart.js</span><span>p5.js</span></dd>
+      <dt>Simulation</dt>
+      <dd><span>CARLA</span><span>Unreal Engine</span><span>pybind11</span></dd>
+    </dl>
+  </section>
+
+  <section id="contact" class="wrap reveal">
+    <div class="contact-box">
+      <h2>Let's talk.</h2>
+      <p>I'm looking for Summer 2027 internships in software and AI engineering.</p>
+      <div class="cta">
+        <a class="btn primary" href="mailto:yc7458@nyu.edu">yc7458@nyu.edu</a>
+        <a class="btn" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© <span id="yr"></span> Emily Cui · Built by hand (and with a little AI help)</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // theme toggle
+  const root = document.documentElement;
+  try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const dark = root.dataset.theme
+      ? root.dataset.theme === 'dark'
+      : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+  });
+
+  // scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
