@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airbnb Albany · Emily Cui</title>
+<meta name="description" content="Predicting Airbnb booking likelihood in Albany, NY: a LightGBM + logistic regression ensemble, a leakage fix, and a cost-benefit threshold analysis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f4; --surface: #ffffff; --text: #1f1d1a; --muted: #6b665e;
+    --line: #e7e2d9; --accent: #c2410c; --accent-soft: #fdeee4; --chip: #f1ede6;
+    --good: #15803d; --good-soft: #e7f5ec; --bad: #b91c1c; --bad-soft: #fbeaea;
+    --c-lr: #60a5fa; --c-lgbm: #4ade80; --c-ens: #f59e0b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151412; --surface: #1d1b19; --text: #ece8e1; --muted: #a39d93;
+      --line: #2f2c28; --accent: #fb923c; --accent-soft: #2c1d12; --chip: #26231f;
+      --good: #4ade80; --good-soft: #14281c; --bad: #f87171; --bad-soft: #2d1616;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151412; --surface: #1d1b19; --text: #ece8e1; --muted: #a39d93;
+    --line: #2f2c28; --accent: #fb923c; --accent-soft: #2c1d12; --chip: #26231f;
+    --good: #4ade80; --good-soft: #14281c; --bad: #f87171; --bad-soft: #2d1616;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: "Inter", system-ui, sans-serif;
+         font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 880px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+
+  nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 85%, transparent);
+        backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .back { text-decoration: none; font-size: 14px; color: var(--muted); }
+  .back:hover { color: var(--text); }
+  .logo { font-family: "Fraunces", serif; font-weight: 600; font-size: 20px; text-decoration: none; }
+  .logo span { color: var(--accent); }
+  .theme-btn { background: none; border: 1px solid var(--line); border-radius: 999px; width: 34px; height: 34px;
+               cursor: pointer; color: var(--text); display: grid; place-items: center; }
+  .theme-btn svg { width: 16px; height: 16px; }
+
+  header.hero { padding-top: 72px; padding-bottom: 40px; }
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent); margin-bottom: 16px; }
+  h1 { font-family: "Fraunces", serif; font-weight: 400; font-size: clamp(34px, 6vw, 52px);
+       line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+  h1 em { color: var(--accent); }
+  .lede { font-size: 18px; color: var(--muted); max-width: 660px; margin-bottom: 28px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .meta span { font-size: 13px; background: var(--chip); color: var(--muted); padding: 4px 11px; border-radius: 999px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 36px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .kpi .v { font-family: "Fraunces", serif; font-size: 30px; font-weight: 600; line-height: 1.1; }
+  .kpi .v small { font-size: 16px; color: var(--muted); font-weight: 400; }
+  .kpi .l { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  section { padding-top: 52px; padding-bottom: 52px; border-top: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+  .sec-num { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent); }
+  h2 { font-family: "Fraunces", serif; font-weight: 600; font-size: 28px; letter-spacing: -0.01em; }
+  .sec-sub { color: var(--muted); margin-bottom: 28px; max-width: 680px; }
+  h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  p + p { margin-top: 12px; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 10px; background: #fff; }
+  figcaption { font-size: 13.5px; color: var(--muted); margin-top: 12px; }
+
+  /* tabs */
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .tab { font: inherit; font-size: 13.5px; padding: 6px 14px; border-radius: 999px; cursor: pointer;
+         border: 1px solid var(--line); background: var(--bg); color: var(--muted); transition: all .15s; }
+  .tab:hover { color: var(--text); border-color: var(--muted); }
+  .tab[aria-selected="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .panel { display: none; }
+  .panel.on { display: block; animation: fade .3s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .insight { margin-top: 14px; padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft);
+             border-radius: 0 10px 10px 0; font-size: 14.5px; }
+
+  /* features */
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .feat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .feat .k { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+  .feat p { font-size: 14px; color: var(--muted); }
+  .feat code { font-family: "JetBrains Mono", monospace; font-size: 12.5px; background: var(--chip); padding: 1px 5px; border-radius: 4px; color: var(--text); }
+
+  /* models */
+  .bars { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 56px; align-items: center; gap: 12px; cursor: pointer; }
+  .bar-row .name { font-size: 14.5px; font-weight: 500; }
+  .bar-track { height: 26px; background: var(--chip); border-radius: 8px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; width: 0; border-radius: 8px; transition: width 1s cubic-bezier(.2,.8,.2,1); }
+  .bar-row .val { font-family: "JetBrains Mono", monospace; font-size: 14px; text-align: right; }
+  .bar-row:hover .name, .bar-row.active .name { color: var(--accent); }
+  .baseline-mark { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--muted); opacity: .5; }
+  .model-note { margin-top: 18px; font-size: 14.5px; min-height: 72px; }
+  .axis { display: grid; grid-template-columns: 150px 1fr 56px; gap: 12px; font-size: 11.5px; color: var(--muted); }
+  .axis div:nth-child(2) { display: flex; justify-content: space-between; }
+
+  /* leakage */
+  .split { display: flex; height: 44px; border-radius: 10px; overflow: hidden; font-size: 12.5px; font-weight: 500; margin: 10px 0 6px; }
+  .split > div { display: grid; place-items: center; color: #fff; transition: flex .5s ease; white-space: nowrap; overflow: hidden; }
+  .s-train { background: #64748b; }
+  .s-val { background: #0ea5e9; }
+  .s-test { background: #f59e0b; }
+  .s-test.leak { background: repeating-linear-gradient(45deg, #dc2626, #dc2626 8px, #ef4444 8px, #ef4444 16px); }
+  .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--bg); margin-bottom: 14px; }
+  .toggle button { font: inherit; font-size: 13.5px; border: none; background: none; color: var(--muted);
+                   padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+  .toggle button.on { background: var(--text); color: var(--bg); }
+  .leak-text { font-size: 14.5px; min-height: 96px; }
+  .tl { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); }
+
+  /* calculator */
+  .calc { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .slider { margin-bottom: 18px; }
+  .slider label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+  .slider label b { font-family: "JetBrains Mono", monospace; font-weight: 500; color: var(--accent); }
+  .slider .hint { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .matrix { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 8px; font-size: 13px; }
+  .matrix .h { color: var(--muted); display: grid; place-items: center; text-align: center; font-size: 12px; }
+  .cell { border-radius: 12px; padding: 14px 10px; text-align: center; }
+  .cell .t { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+  .cell .n { font-family: "JetBrains Mono", monospace; font-size: 20px; font-weight: 500; margin-top: 4px; }
+  .cell .d { font-size: 11.5px; opacity: .8; margin-top: 2px; }
+  .pos { background: var(--good-soft); color: var(--good); }
+  .neg { background: var(--bad-soft); color: var(--bad); }
+  .zero { background: var(--chip); color: var(--muted); }
+  .thr-btns { display: flex; gap: 8px; margin: 26px 0 12px; flex-wrap: wrap; }
+  .thr-btns button { font: inherit; font-size: 13.5px; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+                     border: 1px solid var(--line); background: var(--bg); color: var(--text); }
+  .thr-btns button.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .thr-out { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .thr-out .kpi .v { font-size: 26px; }
+  .caveat { font-size: 13px; color: var(--muted); margin-top: 14px; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  ul.clean { list-style: none; }
+  ul.clean li { position: relative; padding-left: 18px; margin-bottom: 8px; font-size: 15px; }
+  ul.clean li::before { content: ""; position: absolute; left: 0; top: 11px; width: 8px; height: 1.5px; background: var(--accent); }
+
+  footer { padding: 32px 0 48px; text-align: center; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .wrap { padding-left: 16px; padding-right: 16px; }
+    header.hero { padding-top: 48px; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .feat-grid, .calc, .two { grid-template-columns: 1fr; }
+    .bar-row, .axis { grid-template-columns: 96px 1fr 48px; }
+    .card { padding: 18px; }
+    .split { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="back" href="../">← Emily Cui</a>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <header class="hero wrap">
+    <div class="eyebrow">PROJECT · MACHINE LEARNING</div>
+    <h1>Will this Airbnb get booked tonight? <em>Predicting demand in Albany, NY.</em></h1>
+    <p class="lede">
+      Albany's visitors are lobbyists, students, and their families, not tourists, so generic pricing tools miss its demand.
+      We built a model that predicts whether a listing will be booked on a given night, then turned its output into a
+      business decision with a cost-benefit analysis.
+    </p>
+    <div class="meta">
+      <span>Data Science &amp; AI for Business · NYU · Spring 2026</span>
+      <span>4-person team</span>
+      <span>My role: modeling &amp; evaluation</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="v">479</div><div class="l">active listings across 15 wards</div></div>
+      <div class="kpi"><div class="v">307K</div><div class="l">listing-night rows</div></div>
+      <div class="kpi"><div class="v">0.90</div><div class="l">test AUC (baseline 0.77)</div></div>
+      <div class="kpi"><div class="v">~$94K</div><div class="l">estimated gain vs. default threshold</div></div>
+    </div>
+  </header>
+
+  <!-- 01 data -->
+  <section class="wrap">
+    <div class="sec-head"><span class="sec-num">01</span><h2>What drives demand</h2></div>
+    <p class="sec-sub">We joined Inside Airbnb's listings and calendar files into one row per listing per night. 32.9% of listing-nights were booked. Click through what we found.</p>
+    <div class="card">
+      <div class="tabs" role="tablist" data-group="eda">
+        <button class="tab" role="tab" aria-selected="true" data-target="eda-season">Seasonality</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="eda-week">Day of week</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="eda-ward">Neighborhood</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="eda-price">Price</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="eda-room">Room type</button>
+      </div>
+      <div class="panel on" id="eda-season">
+        <figure><img src="img/monthly.png" alt="Monthly occupancy rate trend" loading="lazy"></figure>
+        <div class="insight">Summer peaks near 48%; winter falls below 31%. The swing is milder than in tourist cities, because government and university travel keeps demand going year-round.</div>
+      </div>
+      <div class="panel" id="eda-week">
+        <figure><img src="img/weekday.png" alt="Occupancy by day of week" loading="lazy"></figure>
+        <div class="insight">Friday and Saturday reach about 41% versus 37% on weekdays: a real but modest weekend lift for a city that isn't a weekend getaway.</div>
+      </div>
+      <div class="panel" id="eda-ward">
+        <figure><img src="img/wards.png" alt="Occupancy rate by ward" loading="lazy"></figure>
+        <div class="insight">Location matters on its own: the First Ward is booked about half the time, the Fifth Ward under 20%. This motivated a neighborhood occupancy feature.</div>
+      </div>
+      <div class="panel" id="eda-price">
+        <figure><img src="img/pricebucket.png" alt="Occupancy by price bucket" loading="lazy"></figure>
+        <div class="insight">Occupancy is not simply "cheaper is better": $150–200 listings do best (~51%) and $300–500 listings worst (~12%). A linear model can't capture this shape; trees can.</div>
+      </div>
+      <div class="panel" id="eda-room">
+        <figure><img src="img/roomtype.png" alt="Occupancy by room type" loading="lazy"></figure>
+        <div class="insight">Private rooms are booked more often than entire homes (43.6% vs 35.4%). Hotel rooms look near-perfect, but they are a tiny sample.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 features -->
+  <section class="wrap">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Features we engineered</h2></div>
+    <p class="sec-sub">25 features in the final occupancy model. These three carried the most signal beyond the raw listing data.</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="k">BOOKING HISTORY</div>
+        <h3>Lag features</h3>
+        <p>Rolling 30- and 60-day booking counts and occupancy, shifted by one day with <code>shift(1)</code> so a row never sees its own label.</p>
+      </div>
+      <div class="feat">
+        <div class="k">LOCATION</div>
+        <h3>Neighborhood demand</h3>
+        <p>Each ward's historical occupancy, computed with 5-fold target encoding on training data only, so test outcomes never leak into the feature.</p>
+      </div>
+      <div class="feat">
+        <div class="k">TIME</div>
+        <h3>Calendar signals</h3>
+        <p>Month, day of week, weekend flag, and quarter, letting the model learn seasonal and weekly patterns directly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 models -->
+  <section class="wrap">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Models</h2></div>
+    <p class="sec-sub">We trained on the first 8 months and tested on the last 3, never shuffling across time. Click a model to see why it scored the way it did.</p>
+    <div class="card">
+      <div class="bars" id="bars">
+        <div class="bar-row" data-i="0"><span class="name">Logistic Reg.</span><div class="bar-track"><div class="bar-fill" style="background:var(--c-lr)" data-w="0.767"></div></div><span class="val">0.767</span></div>
+        <div class="bar-row" data-i="1"><span class="name">LightGBM</span><div class="bar-track"><div class="bar-fill" style="background:var(--c-lgbm)" data-w="0.875"></div></div><span class="val">0.875</span></div>
+        <div class="bar-row active" data-i="2"><span class="name">Ensemble</span><div class="bar-track"><div class="bar-fill" style="background:var(--c-ens)" data-w="0.899"></div></div><span class="val">0.899</span></div>
+      </div>
+      <div class="axis" style="margin-top:6px"><div></div><div><span>AUC 0.5 (random)</span><span>1.0</span></div><div></div></div>
+      <div class="model-note" id="modelNote"></div>
+      <div class="tabs" style="margin-top:18px" data-group="mfig">
+        <button class="tab" aria-selected="true" data-target="m-roc">ROC curves</button>
+        <button class="tab" aria-selected="false" data-target="m-dist">Predicted probabilities</button>
+        <button class="tab" aria-selected="false" data-target="m-imp">Feature importance</button>
+      </div>
+      <div class="panel on" id="m-roc"><figure><img src="img/roc.png" alt="ROC curves for all models" loading="lazy"></figure></div>
+      <div class="panel" id="m-dist"><figure><img src="img/probdist.png" alt="Ensemble predicted probability distribution" loading="lazy"><figcaption>The ensemble separates booked from unbooked nights into two clear peaks.</figcaption></figure></div>
+      <div class="panel" id="m-imp"><figure><img src="img/importance.png" alt="Ensemble feature importance" loading="lazy"><figcaption>Month, neighborhood demand, and review activity lead. Price matters to LightGBM but not to the linear model, because its effect isn't linear.</figcaption></figure></div>
+    </div>
+  </section>
+
+  <!-- 04 leakage -->
+  <section class="wrap">
+    <div class="sec-head"><span class="sec-num">04</span><h2>The bug that made us look too good</h2></div>
+    <p class="sec-sub">LightGBM uses early stopping: training halts when a monitored score stops improving. The question is which data it monitors.</p>
+    <div class="card">
+      <div class="toggle" id="leakToggle">
+        <button data-mode="before" class="on">Before the fix</button>
+        <button data-mode="after">After the fix</button>
+      </div>
+      <div class="tl"><span>Apr 2025</span><span>time →</span><span>Feb 2026</span></div>
+      <div class="split" id="split">
+        <div class="s-train" style="flex: 8">Train (8 months)</div>
+        <div class="s-val" style="flex: 0"></div>
+        <div class="s-test leak" style="flex: 3" id="testSeg">Test · also used for early stopping</div>
+      </div>
+      <div class="leak-text" id="leakText"></div>
+    </div>
+  </section>
+
+  <!-- 05 calculator -->
+  <section class="wrap">
+    <div class="sec-head"><span class="sec-num">05</span><h2>From probability to dollars</h2></div>
+    <p class="sec-sub">A model outputs a probability; a business needs a yes/no. We framed Airbnb surfacing likely-to-book listings, and priced each kind of right and wrong answer. Drag the assumptions to see how each outcome's value changes.</p>
+    <div class="card">
+      <div class="calc">
+        <div>
+          <div class="slider">
+            <label>Median nightly price <b id="o-price"></b></label>
+            <input type="range" id="price" min="60" max="200" step="1" value="104">
+          </div>
+          <div class="slider">
+            <label>Airbnb service fee <b id="o-fee"></b></label>
+            <input type="range" id="fee" min="5" max="20" step="0.5" value="15.5">
+          </div>
+          <div class="slider">
+            <label>Host discount after a missed booking <b id="o-disc"></b></label>
+            <input type="range" id="disc" min="0" max="50" step="1" value="20">
+            <div class="hint">False negative: the host cuts the price unnecessarily.</div>
+          </div>
+          <div class="slider">
+            <label>Penalty for a predicted booking that stays empty <b id="o-pen"></b></label>
+            <input type="range" id="pen" min="0" max="100" step="1" value="50">
+            <div class="hint">False positive: the host turns away other guests. % of median price.</div>
+          </div>
+        </div>
+        <div>
+          <div class="matrix">
+            <div></div><div class="h">Actually booked</div><div class="h">Actually empty</div>
+            <div class="h">Predicted booked</div>
+            <div class="cell pos"><div class="t">TRUE POSITIVE</div><div class="n" id="v-tp"></div><div class="d">full fee</div></div>
+            <div class="cell neg"><div class="t">FALSE POSITIVE</div><div class="n" id="v-fp"></div><div class="d">vacancy penalty</div></div>
+            <div class="h">Predicted empty</div>
+            <div class="cell pos" id="c-fn"><div class="t">FALSE NEGATIVE</div><div class="n" id="v-fn"></div><div class="d">fee on discounted price</div></div>
+            <div class="cell zero"><div class="t">TRUE NEGATIVE</div><div class="n">$0.00</div><div class="d">nothing happens</div></div>
+          </div>
+          <p class="caveat" id="ratio"></p>
+        </div>
+      </div>
+
+      <div class="thr-btns" id="thrBtns">
+        <button data-t="0.50">Default · 0.50</button>
+        <button data-t="0.64" class="on">F1-optimal · 0.64</button>
+        <button data-t="0.85">Revenue-optimal · 0.85</button>
+      </div>
+      <div class="thr-out">
+        <div class="kpi"><div class="v" id="t-rev"></div><div class="l">estimated revenue on the 3-month test set</div></div>
+        <div class="kpi"><div class="v" id="t-gain"></div><div class="l">versus the default 0.50 threshold</div></div>
+      </div>
+      <figure style="margin-top:18px"><img src="img/revenue.png" alt="Revenue impact by threshold" loading="lazy"></figure>
+      <p class="caveat">Totals use the original assumptions ($104, 15.5%, 20%, 50%); the sliders above change per-outcome values only. The fee is public, but the discount and penalty are estimates, so read the totals as directional. The ~$94K headline is the gap between the revenue-optimal and default thresholds over the test window.</p>
+    </div>
+  </section>
+
+  <!-- 06 reflection -->
+  <section class="wrap">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Limits &amp; what I'd do next</h2></div>
+    <div class="two">
+      <div class="card">
+        <h3>Honest limits</h3>
+        <ul class="clean">
+          <li>"Unavailable" doesn't always mean booked: hosts also block dates for themselves, so labels are noisy.</li>
+          <li>Only active listings appear in the data, so hosts who quit are missing (survivorship bias).</li>
+          <li>The companion price model reached only R² = 0.35. In a 479-listing market, price is largely each host's personal choice.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What I'd change</h3>
+        <ul class="clean">
+          <li>Tune the decision threshold on the validation split, not the test set.</li>
+          <li>Run ablations to measure exactly how much each engineered feature adds.</li>
+          <li>Stress-test the cost assumptions with a sensitivity analysis before quoting a dollar figure.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>Built by <a href="../">Emily Cui</a> · Data: Inside Airbnb (Albany, NY, scraped Nov 2025)</footer>
+
+<script>
+  // theme
+  const root = document.documentElement;
+  try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+  });
+
+  // tabs
+  document.querySelectorAll('.tabs').forEach(group => {
+    const tabs = group.querySelectorAll('.tab');
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.setAttribute('aria-selected', t === tab);
+        document.getElementById(t.dataset.target).classList.toggle('on', t === tab);
+      });
+    }));
+  });
+
+  // model bars
+  const notes = [
+    '<b>Logistic regression (0.767)</b> was our baseline: median imputation, balanced class weights, standardized features. Its predictions bunch between 0.3 and 0.7 because it can only draw straight lines, and price affects demand in a curve.',
+    '<b>LightGBM (0.875)</b> is gradient-boosted trees: each new tree focuses on the previous ones\' mistakes. It captures non-linear effects like the price sweet spot and makes confident predictions near 0 and 1.',
+    '<b>Ensemble (0.899)</b> combines both. When LightGBM is confidently wrong, the logistic model pulls it back; the trees capture interactions the linear model misses. The result is our best and most stable model.'
+  ];
+  const rows = document.querySelectorAll('.bar-row');
+  const note = document.getElementById('modelNote');
+  function pick(i) { rows.forEach(r => r.classList.toggle('active', +r.dataset.i === i)); note.innerHTML = notes[i]; }
+  rows.forEach(r => r.addEventListener('click', () => pick(+r.dataset.i)));
+  pick(2);
+  const barObs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.bar-fill').forEach(b => b.style.width = ((+b.dataset.w - 0.5) / 0.5 * 100) + '%');
+      barObs.disconnect();
+    }
+  }), { threshold: 0.3 });
+  barObs.observe(document.getElementById('bars'));
+
+  // leakage toggle
+  const leakTexts = {
+    before: '<b>Before:</b> early stopping watched the <b>test set</b>. The model kept training until test performance peaked, so the test score was partly chosen by the test data itself. The reported AUC was optimistic: it measured how well we fit the test set, not how well we would predict the future.',
+    after: '<b>After:</b> we split off the <b>last 15% of the training period</b>, kept in time order, purely for early stopping. The test set stays untouched until one final evaluation, so the 0.90 AUC is an honest estimate of performance on unseen months.'
+  };
+  const split = document.getElementById('split');
+  const [segTrain, segVal, segTest] = split.children;
+  function leak(mode) {
+    document.querySelectorAll('#leakToggle button').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    if (mode === 'before') {
+      segTrain.style.flex = 8; segTrain.textContent = 'Train (8 months)';
+      segVal.style.flex = 0; segVal.textContent = '';
+      segTest.classList.add('leak'); segTest.textContent = 'Test · also used for early stopping';
+    } else {
+      segTrain.style.flex = 6.8; segTrain.textContent = 'Train';
+      segVal.style.flex = 1.2; segVal.textContent = 'Val 15%';
+      segTest.classList.remove('leak'); segTest.textContent = 'Test · held out';
+    }
+    document.getElementById('leakText').innerHTML = leakTexts[mode];
+  }
+  document.querySelectorAll('#leakToggle button').forEach(b => b.addEventListener('click', () => leak(b.dataset.mode)));
+  leak('before');
+
+  // calculator
+  const $ = id => document.getElementById(id);
+  const money = v => (v < 0 ? '−$' : '$') + Math.abs(v).toFixed(2);
+  function calc() {
+    const p = +$('price').value, f = +$('fee').value / 100, d = +$('disc').value / 100, pen = +$('pen').value / 100;
+    $('o-price').textContent = '$' + p; $('o-fee').textContent = (f * 100).toFixed(1) + '%';
+    $('o-disc').textContent = Math.round(d * 100) + '%'; $('o-pen').textContent = Math.round(pen * 100) + '%';
+    const tp = p * f, fn = p * (1 - d) * f, fp = -p * pen;
+    $('v-tp').textContent = money(tp); $('v-fn').textContent = money(fn); $('v-fp').textContent = money(fp);
+    $('ratio').textContent = fp < 0
+      ? `One false positive wipes out the fee from ${(Math.abs(fp) / tp).toFixed(1)} correct bookings, which is why the best threshold is high: the model should only say "booked" when it is very sure.`
+      : 'With no vacancy penalty, false positives cost nothing, and a low threshold would win.';
+  }
+  ['price', 'fee', 'disc', 'pen'].forEach(id => $(id).addEventListener('input', calc));
+  calc();
+
+  const thr = { '0.50': -21090, '0.64': 36669, '0.85': 72909 };
+  const usd = v => (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US');
+  function setThr(t) {
+    document.querySelectorAll('#thrBtns button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+    $('t-rev').textContent = usd(thr[t]);
+    const g = thr[t] - thr['0.50'];
+    $('t-gain').textContent = g === 0 ? '—' : '+' + usd(g);
+  }
+  document.querySelectorAll('#thrBtns button').forEach(b => b.addEventListener('click', () => setThr(b.dataset.t)));
+  setThr('0.64');
+</script>
+</body>
+</html>
