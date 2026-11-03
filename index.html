@@ -67,6 +67,14 @@
   .contact .win-body { padding: 14px 16px 16px; }
   .contact p { color: var(--muted); margin-bottom: 10px; font-size: 19px; }
   .contact .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .addr { display: flex; align-items: stretch; margin-top: 14px; border: 3px solid var(--line); background: var(--win-2); }
+  .addr code { flex: 1; min-width: 0; padding: 5px 8px; font: 500 13px/1.5 "IBM Plex Mono", monospace; color: var(--text);
+               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .addr code::before { content: "> "; color: var(--muted); }
+  .addr button { flex: none; border: 0; border-left: 3px solid var(--line); background: var(--yellow); color: #2f2350;
+                 font: 600 13px "Pixelify Sans", monospace; padding: 0 12px; cursor: pointer; }
+  .addr button:hover { background: var(--pink); }
+  .addr button.done { background: var(--mint); }
 
   /* ---------- bottom: project folders ---------- */
   .dock { grid-column: 1 / -1; }
@@ -249,9 +257,13 @@
         <div class="win-body">
           <p>Say hi, I reply fast.</p>
           <div class="row">
-            <a class="pbtn pink" href="mailto:yc7458@nyu.edu">Email</a>
-            <a class="pbtn blue" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="pbtn mint" href="https://github.com/Yixtk" target="_blank" rel="noopener">GitHub</a>
+            <a class="pbtn pink" href="mailto:yc7458@nyu.edu" data-show="yc7458@nyu.edu">Email</a>
+            <a class="pbtn blue" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener" data-show="linkedin.com/in/yicui2027">LinkedIn</a>
+            <a class="pbtn mint" href="https://github.com/Yixtk" target="_blank" rel="noopener" data-show="github.com/Yixtk">GitHub</a>
+          </div>
+          <div class="addr">
+            <code id="addrText">yc7458@nyu.edu</code>
+            <button type="button" id="addrCopy" aria-label="Copy address">Copy</button>
           </div>
         </div>
       </section>
@@ -297,7 +309,7 @@ const FOLDERS = [
   ]},
   { id: "research", name: "Research", c: "var(--lilac)", d: "#8f72e6", items: [
     { t: "Nano Digital Twin", meta: "C2SMART, NYU · Summer 2025", p: "A virtual traffic simulation of Downtown Brooklyn built on CARLA and Unreal Engine.", links: [["Read brief", "research/#digital-twin"]] },
-    { t: "Work-zone Safety", meta: "C2SMART, NYU · 2026 – now", p: "A benchmark for how safely self-driving agents handle construction work zones.", links: [["Read brief", "research/#workzone"]] },
+    { t: "Work-zone Safety", meta: "C2SMART, NYU · ended May 2026", p: "A benchmark for how safely self-driving agents handle construction work zones.", links: [["Read brief", "research/#workzone"]] },
     { t: "Urban Scaling", meta: "CUSP, NYU · 2026 – now", p: "How city size, commuting and other urban factors relate to depression across U.S. metro areas.", links: [["Read brief", "research/#urban-scaling"]] },
     { t: "ShopScout", meta: "NYU VIP · 2026 – now", p: "An assistive tool to help blind and low-vision shoppers use self-checkout machines.", links: [["Read brief", "research/#shopscout"]] },
     { t: "Wind Turbine Maintenance", meta: "2026 – now", p: "When to repair offshore wind-turbine blades, balancing cost and worker safety.", links: [["Read brief", "research/#wind-turbine"]] }
@@ -399,6 +411,30 @@ const setStatus = () => {
   st.title = tip;
 };
 setStatus(); setInterval(setStatus, 60000);
+
+// contact: hovering a button shows its address; Copy copies whatever is shown
+const addrText = document.getElementById("addrText");
+const addrCopy = document.getElementById("addrCopy");
+document.querySelectorAll(".contact [data-show]").forEach(a => {
+  const show = () => { addrText.textContent = a.dataset.show; addrCopy.textContent = "Copy"; addrCopy.classList.remove("done"); };
+  a.addEventListener("mouseenter", show);
+  a.addEventListener("focus", show);
+});
+addrCopy.addEventListener("click", async () => {
+  const t = addrText.textContent;
+  const ok = navigator.clipboard
+    ? await Promise.race([navigator.clipboard.writeText(t).then(() => true, () => false),
+                          new Promise(res => setTimeout(() => res(false), 800))])
+    : false;
+  if (!ok) {
+    const r = document.createRange(); r.selectNodeContents(addrText);
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    try { document.execCommand("copy"); } catch (e2) {}
+    sel.removeAllRanges();
+  }
+  addrCopy.textContent = "Copied!"; addrCopy.classList.add("done");
+  setTimeout(() => { addrCopy.textContent = "Copy"; addrCopy.classList.remove("done"); }, 1600);
+});
 
 // clock + year
 const clock = document.getElementById("clock");
