@@ -264,7 +264,7 @@
             <a class="pbtn mint" href="https://github.com/Yixtk" target="_blank" rel="noopener" data-show="github.com/Yixtk">GitHub</a>
           </div>
           <div class="addr">
-            <code id="addrText" class="idle">welcome! hover a button ↑</code>
+            <code id="addrText" class="idle">welcome! hover to see my contacts</code>
             <button type="button" id="addrCopy" aria-label="Copy address" hidden>Copy</button>
           </div>
         </div>
@@ -417,7 +417,7 @@ setStatus(); setInterval(setStatus, 60000);
 // contact: hovering a button shows its address; Copy copies whatever is shown
 const addrText = document.getElementById("addrText");
 const addrCopy = document.getElementById("addrCopy");
-const WELCOME = "welcome! hover a button ↑";
+const WELCOME = "welcome! hover to see my contacts";
 let leaveTimer;
 const setAddr = t => {
   clearTimeout(leaveTimer);
@@ -426,18 +426,18 @@ const setAddr = t => {
   addrCopy.hidden = !t;
   addrCopy.textContent = "Copy"; addrCopy.classList.remove("done");
 };
-const idleSoon = () => { clearTimeout(leaveTimer); leaveTimer = setTimeout(() => setAddr(""), 200); };
+// inside the contact_me.exe window: show an address (email by default, or the hovered button's);
+// leaving the window goes back to welcome
+const contactWin = document.getElementById("contact");
+let lastShown = "yc7458@nyu.edu";
 document.querySelectorAll(".contact [data-show]").forEach(a => {
-  a.addEventListener("mouseenter", () => setAddr(a.dataset.show));
-  a.addEventListener("focus", () => setAddr(a.dataset.show));
-  a.addEventListener("mouseleave", idleSoon);
+  const show = () => { lastShown = a.dataset.show; setAddr(lastShown); };
+  a.addEventListener("mouseenter", show);
+  a.addEventListener("focus", show);
 });
-// moving from a button down to Copy keeps the address; leaving the bar goes back to welcome
-const addrBar = document.querySelector(".addr");
-addrBar.addEventListener("mouseenter", () => { if (!addrCopy.hidden) clearTimeout(leaveTimer); });
-addrBar.addEventListener("mouseleave", idleSoon);
-const contactBody = document.querySelector(".contact .win-body");
-contactBody.addEventListener("focusout", e => { if (!contactBody.contains(e.relatedTarget)) setAddr(""); });
+contactWin.addEventListener("mouseenter", () => setAddr(lastShown));
+contactWin.addEventListener("mouseleave", () => { lastShown = "yc7458@nyu.edu"; setAddr(""); });
+contactWin.addEventListener("focusout", e => { if (!contactWin.contains(e.relatedTarget)) setAddr(""); });
 addrCopy.addEventListener("click", async () => {
   const t = addrText.textContent;
   const ok = navigator.clipboard
