@@ -118,6 +118,7 @@ body { padding-top: 38px; }
   font-family: "Pixelify Sans", monospace; font-size: 15px; font-weight: 600;
   user-select: none;
 }
+.win-bar > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .win-bar .grip {
   flex: 1; height: 10px; min-width: 20px;
   background: repeating-linear-gradient(to bottom, rgba(58,42,94,.45) 0 2px, transparent 2px 4px);
@@ -157,6 +158,14 @@ button.wbtn:hover { background: var(--yellow); }
 .chip.dev { background: var(--yellow); color: #2f2350; }
 
 :focus-visible { outline: 3px dashed var(--pink); outline-offset: 3px; }
+
+/* phones: compact menu bar so every item fits */
+@media (max-width: 560px) {
+  .menubar { padding: 0 6px; gap: 0; font-size: 13.5px; }
+  .menubar .brand { margin-right: 4px; }
+  .menubar a.m, .menubar button.m { padding: 3px 6px; }
+  .menubar .clock { display: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

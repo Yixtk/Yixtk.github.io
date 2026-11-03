@@ -123,7 +123,7 @@
 
   @media (max-width: 880px) {
     .desk { grid-template-columns: 1fr; margin-top: 22px; padding: 0 16px; }
-    .left { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 18px; }
+    .left { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 18px; }
     .bubble .tail { display: none; }
     .folders { grid-template-columns: repeat(3, 1fr); }
   }
@@ -133,9 +133,12 @@
     .bubble .tail { display: block; }
     .cards { grid-template-columns: 1fr; }
     .win-body { padding: 14px 14px; }
-    .menubar .hide-sm { display: none; }
     .folder svg { width: 64px; height: 52px; }
-    .menubar .clock { display: none; }
+    dialog .wbtn { width: 30px; height: 30px; font-size: 18px; }
+    .item { grid-template-columns: 1fr; }
+    .item > svg { display: none; }
+    .dlg-body { padding: 4px 16px 16px; }
+    .dlg-path { padding: 8px 16px 0; }
     .interest { width: 100%; flex-wrap: wrap; row-gap: 0; }
     .interest small { flex-basis: 100%; padding-left: 22px; }
   }
@@ -174,7 +177,7 @@
   <a class="brand" href="./"><i></i>Emily.OS</a>
   <a class="m" href="#projects">Projects</a>
   <a class="m" href="research/">Research</a>
-  <a class="m hide-sm" href="#contact">Contact</a>
+  <a class="m" href="#contact">Contact</a>
   <span class="spacer"></span>
   <button class="m" id="themeBtn" aria-label="Toggle dark mode">☾</button>
   <span class="clock" id="clock"></span>
@@ -435,9 +438,11 @@ document.querySelectorAll(".contact [data-show]").forEach(a => {
   a.addEventListener("mouseenter", show);
   a.addEventListener("focus", show);
 });
+const noHover = matchMedia("(hover: none)").matches;
+if (noHover) setAddr(lastShown);
 contactWin.addEventListener("mouseenter", () => setAddr(lastShown));
-contactWin.addEventListener("mouseleave", () => { lastShown = "yc7458@nyu.edu"; setAddr(""); });
-contactWin.addEventListener("focusout", e => { if (!contactWin.contains(e.relatedTarget)) setAddr(""); });
+contactWin.addEventListener("mouseleave", () => { if (noHover) return; lastShown = "yc7458@nyu.edu"; setAddr(""); });
+contactWin.addEventListener("focusout", e => { if (!noHover && !contactWin.contains(e.relatedTarget)) setAddr(""); });
 addrCopy.addEventListener("click", async () => {
   const t = addrText.textContent;
   const ok = navigator.clipboard
