@@ -5,7 +5,7 @@
   --win: #fffaff;
   --win-2: #f6f0ff;
   --text: #2f2350;
-  --muted: #74679a;
+  --muted: #54477a;
   --line: #3a2a5e;
   --shadow: #3a2a5e;
   --bar-ink: #3a2a5e;
@@ -27,7 +27,7 @@
     --win: #2a2147;
     --win-2: #231b3d;
     --text: #f1eaff;
-    --muted: #b4a6dc;
+    --muted: #d2c7f2;
     --line: #c9b6ff;
     --shadow: #0c0818;
     --title-a: #f59bcd;
@@ -42,7 +42,7 @@
   --win: #2a2147;
   --win-2: #231b3d;
   --text: #f1eaff;
-  --muted: #b4a6dc;
+  --muted: #d2c7f2;
   --line: #c9b6ff;
   --shadow: #0c0818;
   --title-a: #f59bcd;
@@ -70,6 +70,9 @@ a { color: inherit; }
 img { image-rendering: pixelated; }
 .px { font-family: "Pixelify Sans", "VT323", monospace; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* long-form pages: crisp body font, pixel font only for headings */
+body.readable { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 15.5px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
 
 /* ---------- menu bar ---------- */
 .menubar {
@@ -139,8 +142,8 @@ button.wbtn:hover { background: var(--yellow); }
 .pbtn svg { width: 16px; height: 16px; }
 
 .chip {
-  display: inline-block; font-family: "Pixelify Sans", monospace; font-size: 13px;
-  padding: 1px 8px; background: var(--chip); border: 2px solid var(--line); color: var(--text);
+  display: inline-block; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; font-weight: 500;
+  padding: 2px 8px; line-height: 1.4; background: var(--chip); border: 2px solid var(--line); color: var(--text);
 }
 .chip.dev { background: var(--yellow); color: #2f2350; }
 

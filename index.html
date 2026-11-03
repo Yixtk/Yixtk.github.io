@@ -7,7 +7,7 @@
 <meta name="description" content="Emily Cui — CS at NYU Tandon. Using technology for people's good: education, public interest technology, and serious games.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/pixel.css">
 <style>
   .desk {
@@ -26,7 +26,7 @@
   .bubble .tail .f { fill: var(--win); }
 
   .avatar-body {
-    aspect-ratio: 4 / 5; position: relative; overflow: hidden;
+    aspect-ratio: 1 / 1; position: relative; overflow: hidden;
     background:
       linear-gradient(180deg, #cdbcff 0%, #f3c6ea 62%, #ffe3f1 100%);
   }
@@ -55,7 +55,7 @@
 
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
   .skill .win-body { padding: 14px 16px 16px; }
-  .skill .lbl { font-family: "Pixelify Sans", monospace; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+  .skill .lbl { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
   .skill h3 { font-family: "Pixelify Sans", monospace; font-size: 19px; font-weight: 600; margin: 2px 0 10px; }
   .meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
   .meter i { height: 14px; border: 2px solid var(--line); background: var(--win-2); }
@@ -79,7 +79,7 @@
   .folder svg { width: 76px; height: 62px; transition: transform .12s steps(2); }
   .folder:hover svg { transform: translateY(-4px); }
   .folder .name { font-family: "Pixelify Sans", monospace; font-size: 15px; font-weight: 600; padding: 1px 6px; text-align: center; line-height: 1.2; }
-  .folder .count { font-size: 17px; color: var(--muted); }
+  .folder .count { font-size: 19px; color: var(--muted); }
   .folder:hover .name, .folder:focus-visible .name { background: var(--line); color: var(--win); }
   .f-ink { fill: var(--line); }
   .f-back { fill: var(--fd); }
@@ -97,12 +97,12 @@
   @keyframes pop { from { transform: scale(.9); opacity: 0; } }
   dialog::backdrop { background: rgba(40, 25, 80, .35); }
   .dlg-body { overflow-y: auto; padding: 8px 20px 18px; }
-  .dlg-path { font-size: 18px; color: var(--muted); padding: 8px 20px 0; }
+  .dlg-path { font-size: 19px; color: var(--muted); padding: 8px 20px 0; }
   .item { display: grid; grid-template-columns: 40px 1fr; gap: 14px; padding: 16px 0; border-bottom: 2px dashed var(--line); }
   .item:last-child { border-bottom: 0; }
   .item svg { width: 36px; height: 40px; margin-top: 2px; }
   .item h3 { font-family: "Pixelify Sans", monospace; font-size: 19px; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 2px; }
-  .item .meta { font-size: 18px; color: var(--muted); margin-bottom: 4px; }
+  .item .meta { font-size: 19px; color: var(--muted); margin-bottom: 4px; }
   .item p { margin-bottom: 8px; }
   .item .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .item .links .pbtn { font-size: 14px; padding: 4px 10px; }
@@ -303,9 +303,10 @@ const FOLDERS = [
   { id: "learn", name: "AI for Learning", c: "var(--yellow)", d: "#e8b83c", items: [
     { t: "CS Peer Mentor", meta: "NYU Tandon", p: "Mentoring fellow computer science students at NYU Tandon." },
     { t: "Peer Tutor", meta: "NYU TRIO Scholar Program · Feb 2026 – now", p: "One-on-one tutoring with custom learning materials in probability, discrete math and intro programming." },
-    { t: "SyllaBuddy", dev: true, p: "An AI study companion for students, currently in development." }
+    { t: "SyllaBuddy", dev: true, meta: "Software Engineering team project · NYU", tags: ["Ruby on Rails", "Gemini API", "Google Calendar API", "PostgreSQL"],
+      p: "A course planner for NYU students. Upload a syllabus PDF and Gemini pulls out exam dates and deadlines, an AI chatbot helps you check them, and they sync to Google Calendar. It also helps you find classmates and suggests projects for your resume." }
   ]},
-  { id: "ai", name: "AI", c: "var(--peach)", d: "#e88a5c", items: [
+  { id: "ai", name: "AI at Work", c: "var(--peach)", d: "#e88a5c", items: [
     { t: "JGM Internal Chatbot (Eclipse)", meta: "JGM Innovation · AI Engineer Intern", tags: ["FastAPI", "Azure"],
       p: "An internal AI assistant that automates staff workflows like drafting donor emails and reviewing ad performance, with a five-layer safety system and human review before anything is sent." },
     { t: "Public Resume Reviewer", meta: "JGM Innovation", tags: ["Azure", "Firebase"],

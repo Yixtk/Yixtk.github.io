@@ -7,7 +7,7 @@
 <meta name="description" content="Brief introductions to Emily Cui's research projects: digital twins, work-zone safety, urban scaling, assistive self-checkout, and wind-turbine maintenance.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/pixel.css">
 <style>
   .page { max-width: 900px; margin: 32px auto 56px; padding: 0 24px; display: flex; flex-direction: column; gap: 30px; }
@@ -19,15 +19,15 @@
   .brief { scroll-margin-top: 56px; }
   .brief .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
   .brief h2 { font-family: "Pixelify Sans", monospace; font-size: 26px; font-weight: 700; line-height: 1.15; margin-bottom: 12px; }
-  .brief h3 { font-family: "Pixelify Sans", monospace; font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--muted); margin: 14px 0 4px; }
+  .brief h3 { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 600; letter-spacing: .08em; color: var(--muted); margin: 14px 0 4px; }
   .brief p { max-width: 70ch; }
   .brief ul { list-style: none; max-width: 70ch; }
   .brief li { position: relative; padding-left: 20px; margin-bottom: 4px; }
-  .brief li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 8px; height: 8px; background: var(--c, var(--pink)); border: 2px solid var(--line); }
+  .brief li::before { content: ""; position: absolute; left: 2px; top: 9px; width: 8px; height: 8px; background: var(--c, var(--pink)); border: 2px solid var(--line); }
   .brief .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
   .chip.now { background: var(--mint); color: #2f2350; }
   .back { align-self: flex-start; }
-  footer { text-align: center; color: var(--muted); padding: 0 16px 36px; font-size: 18px; }
+  footer { text-align: center; color: var(--muted); padding: 0 16px 36px; font-size: 13px; }
   @media (max-width: 560px) {
     .page { padding: 0 16px; margin-top: 22px; }
     .win-body { padding: 14px; }
@@ -35,7 +35,7 @@
   }
 </style>
 </head>
-<body>
+<body class="readable">
 
 <nav class="menubar" aria-label="Site">
   <a class="brand" href="../"><i></i>Emily.OS</a>
