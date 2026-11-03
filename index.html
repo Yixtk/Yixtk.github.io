@@ -426,13 +426,17 @@ const setAddr = t => {
   addrCopy.hidden = !t;
   addrCopy.textContent = "Copy"; addrCopy.classList.remove("done");
 };
+const idleSoon = () => { clearTimeout(leaveTimer); leaveTimer = setTimeout(() => setAddr(""), 200); };
 document.querySelectorAll(".contact [data-show]").forEach(a => {
   a.addEventListener("mouseenter", () => setAddr(a.dataset.show));
   a.addEventListener("focus", () => setAddr(a.dataset.show));
+  a.addEventListener("mouseleave", idleSoon);
 });
-// keep the address while the mouse moves down to Copy; go back to welcome once it leaves the card
+// moving from a button down to Copy keeps the address; leaving the bar goes back to welcome
+const addrBar = document.querySelector(".addr");
+addrBar.addEventListener("mouseenter", () => { if (!addrCopy.hidden) clearTimeout(leaveTimer); });
+addrBar.addEventListener("mouseleave", idleSoon);
 const contactBody = document.querySelector(".contact .win-body");
-contactBody.addEventListener("mouseleave", () => { leaveTimer = setTimeout(() => setAddr(""), 250); });
 contactBody.addEventListener("focusout", e => { if (!contactBody.contains(e.relatedTarget)) setAddr(""); });
 addrCopy.addEventListener("click", async () => {
   const t = addrText.textContent;
