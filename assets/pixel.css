@@ -75,8 +75,10 @@ img { image-rendering: pixelated; }
 body.readable { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 15.5px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
 
 /* ---------- menu bar ---------- */
+body { padding-top: 38px; }
+[id] { scroll-margin-top: 58px; }
 .menubar {
-  position: sticky; top: 0; z-index: 20;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 20;
   display: flex; align-items: center; gap: 4px;
   height: 38px; padding: 0 12px;
   background: var(--win);
@@ -90,7 +92,14 @@ body.readable { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size
   font: inherit; cursor: pointer;
 }
 .menubar a.m:hover, .menubar button.m:hover { background: var(--line); color: var(--win); }
+.menubar a.m[aria-current="page"] { background: var(--line); color: var(--win); }
 .menubar .spacer { flex: 1; }
+
+/* "you are here" ping when a menu link jumps to a window */
+.win.ping { animation: ping .9s steps(1) 2; }
+.win.ping .win-bar { animation: pingbar .9s steps(1) 2; }
+@keyframes ping { 0%, 50% { box-shadow: 6px 6px 0 var(--shadow), 0 0 0 5px var(--yellow); } 25%, 75% { box-shadow: 6px 6px 0 var(--shadow), 0 0 0 5px var(--pink); } }
+@keyframes pingbar { 0%, 50% { background: var(--yellow); } 25%, 75% { background: var(--pink); } }
 .menubar .clock { padding: 0 6px; font-variant-numeric: tabular-nums; }
 
 /* ---------- windows ---------- */

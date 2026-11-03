@@ -37,6 +37,8 @@
   .status { display: inline-flex; align-items: center; gap: 6px; }
   .status i { width: 9px; height: 9px; background: #4fd18b; border: 2px solid var(--line); animation: blink 1.2s steps(1) infinite; }
   @keyframes blink { 50% { opacity: .2; } }
+  .status.off i { background: #a99fc4; animation: none; }
+  .status.brb i { background: var(--yellow); animation: none; }
 
   /* ---------- right: intro + skills + contact ---------- */
   .right { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
@@ -173,7 +175,7 @@
   <div class="left">
     <div class="win bubble">
       <div class="hi">Hi, I'm <span>Emily</span>!</div>
-      <div class="sub">CS @ NYU Tandon</div>
+      <div class="sub">CS Undergraduate @ NYU Tandon</div>
       <svg class="tail" viewBox="0 0 8 6" shape-rendering="crispEdges" aria-hidden="true">
         <rect class="o" x="0" y="0" width="8" height="2"/><rect class="o" x="1" y="2" width="6" height="2"/><rect class="o" x="2" y="4" width="4" height="1"/><rect class="o" x="3" y="5" width="2" height="1"/>
         <rect class="f" x="1" y="0" width="6" height="1"/><rect class="f" x="2" y="1" width="4" height="2"/><rect class="f" x="3" y="3" width="2" height="1"/>
@@ -194,7 +196,7 @@
         </svg>
         <img id="avatar" src="assets/avatar.png" alt="Pixel portrait of Emily" hidden>
       </div>
-      <div class="avatar-cap"><span class="status"><i></i>online</span><span>New York</span></div>
+      <div class="avatar-cap"><span class="status" id="status"><i></i><span id="statusText">online</span></span><span>New York</span></div>
     </div>
   </div>
 
@@ -372,6 +374,31 @@ document.querySelectorAll(".meter").forEach(m => {
 const av = document.getElementById("avatar");
 const showAv = () => { av.hidden = false; document.getElementById("avatarPh").style.display = "none"; };
 if (av.complete && av.naturalWidth) showAv(); else av.addEventListener("load", showAv);
+
+// menu links: jump to the window and make it blink so it's obvious where you landed
+document.querySelectorAll('.menubar a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+  const el = document.querySelector(a.getAttribute("href"));
+  if (!el) return;
+  e.preventDefault();
+  history.replaceState(null, "", a.getAttribute("href"));
+  el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  el.classList.remove("ping"); void el.offsetWidth; el.classList.add("ping");
+}));
+if (location.hash) { const el = document.querySelector(location.hash); if (el && el.classList.contains("win")) el.classList.add("ping"); }
+
+// New York time: 9am–9pm online, midnight–8am sleeping, otherwise be right back
+const st = document.getElementById("status");
+const setStatus = () => {
+  const h = +new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "numeric", hourCycle: "h23" }).format(new Date());
+  const [cls, text, tip] =
+    h >= 9 && h < 21 ? ["", "online", "Usually around 9am–9pm ET"] :
+    h < 8 ? ["off", "sleeping zzz", "Back at 9am ET"] :
+            ["brb", "be right back", "Back soon"];
+  st.className = "status " + cls;
+  document.getElementById("statusText").textContent = text;
+  st.title = tip;
+};
+setStatus(); setInterval(setStatus, 60000);
 
 // clock + year
 const clock = document.getElementById("clock");
