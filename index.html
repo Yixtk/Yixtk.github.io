@@ -4,408 +4,388 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Emily Cui</title>
-<meta name="description" content="Emily Cui — Computer Science at NYU. I build AI systems people can trust.">
+<meta name="description" content="Emily Cui — CS at NYU Tandon. Using technology for people's good: education, public interest technology, and serious games.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/pixel.css">
 <style>
-  :root {
-    --bg: #faf8f4;
-    --surface: #ffffff;
-    --text: #1f1d1a;
-    --muted: #6b665e;
-    --line: #e7e2d9;
-    --accent: #c2410c;
-    --accent-soft: #fdeee4;
-    --chip: #f1ede6;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #151412;
-      --surface: #1d1b19;
-      --text: #ece8e1;
-      --muted: #a39d93;
-      --line: #2f2c28;
-      --accent: #fb923c;
-      --accent-soft: #2c1d12;
-      --chip: #26231f;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #151412;
-    --surface: #1d1b19;
-    --text: #ece8e1;
-    --muted: #a39d93;
-    --line: #2f2c28;
-    --accent: #fb923c;
-    --accent-soft: #2c1d12;
-    --chip: #26231f;
+  .desk {
+    max-width: 1140px; margin: 32px auto 56px; padding: 0 24px;
+    display: grid; grid-template-columns: minmax(260px, 330px) 1fr; gap: 30px 34px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: "Inter", system-ui, sans-serif;
-    font-size: 16px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-    transition: background .25s, color .25s;
+  /* ---------- left: greeting + avatar ---------- */
+  .left { display: flex; flex-direction: column; gap: 26px; }
+  .bubble { padding: 14px 18px; text-align: center; }
+  .bubble .hi { font-family: "Pixelify Sans", monospace; font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .bubble .hi span { color: var(--pink); }
+  .bubble .sub { color: var(--muted); margin-top: 4px; }
+  .bubble .tail { position: absolute; left: 50%; bottom: -21px; width: 24px; height: 18px; transform: translateX(-50%); }
+  .bubble .tail .o { fill: var(--line); }
+  .bubble .tail .f { fill: var(--win); }
+
+  .avatar-body {
+    aspect-ratio: 4 / 5; position: relative; overflow: hidden;
+    background:
+      linear-gradient(180deg, #cdbcff 0%, #f3c6ea 62%, #ffe3f1 100%);
   }
-  a { color: inherit; }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  .avatar-body img, .avatar-body svg.ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .avatar-body .cloud { position: absolute; width: 86px; height: 26px; }
+  .avatar-body .cloud rect { fill: #fff; }
+  .avatar-cap { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-top: 3px solid var(--line); font-size: 18px; color: var(--muted); }
+  .status { display: inline-flex; align-items: center; gap: 6px; }
+  .status i { width: 9px; height: 9px; background: #4fd18b; border: 2px solid var(--line); animation: blink 1.2s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
 
-  /* nav */
-  nav {
-    position: sticky; top: 0; z-index: 10;
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
+  /* ---------- right: intro + skills + contact ---------- */
+  .right { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
+  .intro h1 {
+    font-family: "Pixelify Sans", monospace; font-weight: 700;
+    font-size: clamp(30px, 4.2vw, 44px); line-height: 1.08; margin-bottom: 14px;
   }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-  .logo { font-family: "Fraunces", serif; font-weight: 600; font-size: 20px; text-decoration: none; }
-  .logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 24px; align-items: center; }
-  .nav-links a { text-decoration: none; font-size: 14px; color: var(--muted); transition: color .15s; }
-  .nav-links a:hover { color: var(--text); }
-  .theme-btn {
-    background: none; border: 1px solid var(--line); border-radius: 999px;
-    width: 34px; height: 34px; cursor: pointer; color: var(--text);
-    display: grid; place-items: center;
+  .intro h1 em { font-style: normal; background: linear-gradient(transparent 58%, var(--pink) 58%); padding: 0 4px; }
+  .intro p { margin-bottom: 10px; max-width: 62ch; }
+  .intro p strong { font-weight: 400; color: var(--text); background: var(--chip); padding: 0 4px; }
+  .interests { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .interest { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 3px solid var(--line); background: var(--win-2); }
+  .interest b { font-family: "Pixelify Sans", monospace; font-size: 15px; font-weight: 600; }
+  .interest i { width: 14px; height: 14px; border: 2px solid var(--line); }
+  .interest small { font-size: 18px; color: var(--muted); }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .skill .win-body { padding: 14px 16px 16px; }
+  .skill .lbl { font-family: "Pixelify Sans", monospace; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+  .skill h3 { font-family: "Pixelify Sans", monospace; font-size: 19px; font-weight: 600; margin: 2px 0 10px; }
+  .meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
+  .meter i { height: 14px; border: 2px solid var(--line); background: var(--win-2); }
+  .meter i.on { background: var(--c); }
+  .lv { display: flex; justify-content: space-between; margin-top: 6px; font-size: 18px; color: var(--muted); }
+  .lv b { font-family: "Pixelify Sans", monospace; font-size: 14px; color: var(--text); }
+  .contact .win-body { padding: 14px 16px 16px; }
+  .contact p { color: var(--muted); margin-bottom: 10px; font-size: 19px; }
+  .contact .row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- bottom: project folders ---------- */
+  .dock { grid-column: 1 / -1; }
+  .dock .win-body { padding: 18px 16px 12px; }
+  .dock .hint { color: var(--muted); margin: 0 6px 12px; }
+  .folders { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .folder {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 10px 4px; background: none; border: 0; color: inherit; cursor: pointer;
+    font: inherit;
   }
-  .theme-btn svg { width: 16px; height: 16px; }
+  .folder svg { width: 76px; height: 62px; transition: transform .12s steps(2); }
+  .folder:hover svg { transform: translateY(-4px); }
+  .folder .name { font-family: "Pixelify Sans", monospace; font-size: 15px; font-weight: 600; padding: 1px 6px; text-align: center; line-height: 1.2; }
+  .folder .count { font-size: 17px; color: var(--muted); }
+  .folder:hover .name, .folder:focus-visible .name { background: var(--line); color: var(--win); }
+  .f-ink { fill: var(--line); }
+  .f-back { fill: var(--fd); }
+  .f-front { fill: var(--fc); }
+  .f-hi { fill: #fff; opacity: .75; }
 
-  /* hero */
-  .hero { padding-top: 96px; padding-bottom: 72px; }
-  .eyebrow {
-    font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent);
-    letter-spacing: .02em; margin-bottom: 20px;
-    display: inline-flex; align-items: center; gap: 8px;
+  /* ---------- folder window (dialog) ---------- */
+  dialog.win {
+    position: fixed; inset: 0;
+    margin: auto; padding: 0; color: var(--text);
+    width: min(720px, calc(100% - 32px)); max-height: calc(100vh - 80px);
+    overflow: hidden;
   }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 4px color-mix(in srgb, #22c55e 20%, transparent); }
-  h1 {
-    font-family: "Fraunces", serif; font-weight: 400;
-    font-size: clamp(40px, 7vw, 64px); line-height: 1.08; letter-spacing: -0.02em;
-    margin-bottom: 24px;
+  dialog.win[open] { display: flex; flex-direction: column; animation: pop .18s steps(3); }
+  @keyframes pop { from { transform: scale(.9); opacity: 0; } }
+  dialog::backdrop { background: rgba(40, 25, 80, .35); }
+  .dlg-body { overflow-y: auto; padding: 8px 20px 18px; }
+  .dlg-path { font-size: 18px; color: var(--muted); padding: 8px 20px 0; }
+  .item { display: grid; grid-template-columns: 40px 1fr; gap: 14px; padding: 16px 0; border-bottom: 2px dashed var(--line); }
+  .item:last-child { border-bottom: 0; }
+  .item svg { width: 36px; height: 40px; margin-top: 2px; }
+  .item h3 { font-family: "Pixelify Sans", monospace; font-size: 19px; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .item .meta { font-size: 18px; color: var(--muted); margin-bottom: 4px; }
+  .item p { margin-bottom: 8px; }
+  .item .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .item .links .pbtn { font-size: 14px; padding: 4px 10px; }
+
+  footer { text-align: center; color: var(--muted); padding: 0 16px 36px; font-size: 18px; }
+
+  @media (max-width: 880px) {
+    .desk { grid-template-columns: 1fr; margin-top: 22px; padding: 0 16px; }
+    .left { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 18px; }
+    .bubble .tail { display: none; }
+    .folders { grid-template-columns: repeat(3, 1fr); }
   }
-  h1 em { font-style: italic; color: var(--accent); }
-  .lede { font-size: 19px; color: var(--muted); max-width: 620px; margin-bottom: 32px; }
-  .lede strong { color: var(--text); font-weight: 500; }
-  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 500;
-    text-decoration: none; border: 1px solid var(--line); background: var(--surface);
-    transition: transform .15s, border-color .15s;
-  }
-  .btn:hover { transform: translateY(-1px); border-color: var(--muted); }
-  .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .btn svg { width: 16px; height: 16px; }
-
-  /* sections */
-  section { padding-top: 56px; padding-bottom: 56px; border-top: 1px solid var(--line); }
-  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; }
-  .sec-num { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent); }
-  h2 { font-family: "Fraunces", serif; font-weight: 600; font-size: 28px; letter-spacing: -0.01em; }
-
-  /* now */
-  .now-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .now-card {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px;
-  }
-  .now-card .label { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-  .now-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; line-height: 1.35; }
-  .now-card p { font-size: 14px; color: var(--muted); line-height: 1.55; }
-
-  /* experience */
-  .job { display: grid; grid-template-columns: 170px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px dashed var(--line); }
-  .job:last-child { border-bottom: none; }
-  .job .when { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); padding-top: 3px; }
-  .job h3 { font-size: 17px; font-weight: 600; line-height: 1.4; }
-  .job .org { color: var(--accent); }
-  .job .role { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
-  .job ul { list-style: none; }
-  .job li { position: relative; padding-left: 18px; font-size: 15px; margin-bottom: 6px; }
-  .job li::before { content: ""; position: absolute; left: 0; top: 11px; width: 8px; height: 1.5px; background: var(--accent); }
-
-  /* projects */
-  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .proj {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px;
-    display: flex; flex-direction: column; text-decoration: none;
-    transition: transform .2s, border-color .2s, box-shadow .2s;
-  }
-  a.proj:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 30px -15px rgba(0,0,0,.25); }
-  .proj .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .proj .kind { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--accent); }
-  .proj .arrow { color: var(--muted); transition: transform .2s; }
-  a.proj:hover .arrow { transform: translate(3px, -3px); color: var(--accent); }
-  .proj h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-  .proj p { font-size: 14.5px; color: var(--muted); flex: 1; margin-bottom: 16px; }
-  .stat { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 12px; background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 6px; margin-bottom: 12px; align-self: flex-start; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag { font-size: 12px; background: var(--chip); color: var(--muted); padding: 3px 9px; border-radius: 999px; }
-
-  /* skills */
-  .skills { display: grid; grid-template-columns: 170px 1fr; row-gap: 16px; column-gap: 24px; }
-  .skills dt { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); padding-top: 4px; }
-  .skills dd { display: flex; flex-wrap: wrap; gap: 6px; }
-  .skills dd span { font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); padding: 3px 11px; border-radius: 999px; }
-
-  /* contact */
-  .contact-box {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
-    padding: 40px; text-align: center;
-  }
-  .contact-box h2 { font-size: 32px; margin-bottom: 10px; }
-  .contact-box p { color: var(--muted); margin-bottom: 24px; }
-  .contact-box .cta { justify-content: center; }
-
-  footer { padding: 32px 0 48px; text-align: center; font-size: 13px; color: var(--muted); }
-
-  /* reveal */
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
-
-  @media (max-width: 720px) {
-    .wrap { padding: 0 16px; }
-    .nav-links a.hide-sm { display: none; }
-    .hero { padding-top: 64px; padding-bottom: 48px; }
-    .lede { font-size: 17px; }
-    .now-grid, .proj-grid { grid-template-columns: 1fr; }
-    .job, .skills { grid-template-columns: 1fr; gap: 6px; }
-    .skills dd { margin-bottom: 10px; }
-    .contact-box { padding: 28px 20px; }
+  @media (max-width: 560px) {
+    .left { grid-template-columns: 1fr; }
+    .avatar { max-width: 280px; width: 100%; margin: 0 auto; }
+    .bubble .tail { display: block; }
+    .cards { grid-template-columns: 1fr; }
+    .win-body { padding: 14px 14px; }
+    .menubar .hide-sm { display: none; }
+    .folder svg { width: 64px; height: 52px; }
+    .menubar .clock { display: none; }
+    .interest { width: 100%; flex-wrap: wrap; row-gap: 0; }
+    .interest small { flex-basis: 100%; padding-left: 22px; }
   }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap">
-    <a href="#top" class="logo">Emily<span>.</span></a>
-    <div class="nav-links">
-      <a href="#experience" class="hide-sm">Experience</a>
-      <a href="#projects" class="hide-sm">Projects</a>
-      <a href="#contact">Contact</a>
-      <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      </button>
-    </div>
-  </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="folder" viewBox="0 0 32 26" shape-rendering="crispEdges">
+      <rect class="f-ink" x="2" y="1" width="12" height="5"/>
+      <rect class="f-back" x="3" y="2" width="10" height="4"/>
+      <rect class="f-ink" x="1" y="4" width="30" height="21"/>
+      <rect class="f-back" x="2" y="5" width="28" height="19"/>
+      <rect class="f-ink" x="2" y="8" width="28" height="1"/>
+      <rect class="f-front" x="2" y="9" width="28" height="15"/>
+      <rect class="f-hi" x="4" y="11" width="9" height="1"/>
+      <rect class="f-hi" x="4" y="12" width="2" height="1"/>
+    </symbol>
+    <symbol id="file" viewBox="0 0 18 20" shape-rendering="crispEdges">
+      <rect class="f-ink" x="1" y="0" width="12" height="20"/>
+      <rect class="f-ink" x="13" y="4" width="4" height="16"/>
+      <rect class="f-ink" x="13" y="2" width="2" height="2"/>
+      <rect fill="#fff" x="2" y="1" width="10" height="18"/>
+      <rect fill="#fff" x="12" y="5" width="4" height="14"/>
+      <rect class="f-front" x="12" y="1" width="1" height="4"/>
+      <rect class="f-front" x="13" y="4" width="3" height="1"/>
+      <rect class="f-front" x="4" y="7" width="9" height="2"/>
+      <rect class="f-back" x="4" y="11" width="9" height="1"/>
+      <rect class="f-back" x="4" y="14" width="6" height="1"/>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="menubar" aria-label="Site">
+  <a class="brand" href="./"><i></i>Emily.OS</a>
+  <a class="m" href="#projects">Projects</a>
+  <a class="m" href="research/">Research</a>
+  <a class="m hide-sm" href="#contact">Contact</a>
+  <span class="spacer"></span>
+  <button class="m" id="themeBtn" aria-label="Toggle dark mode">☾</button>
+  <span class="clock" id="clock"></span>
 </nav>
 
-<main id="top">
-  <header class="hero wrap">
-    <div class="eyebrow"><span class="dot"></span>Seeking Summer 2027 SWE / AI Engineering internships</div>
-    <h1>Hi, I'm Emily. I build AI<br>that people can <em>trust</em>.</h1>
-    <p class="lede">
-      I study <strong>Computer Science at NYU Tandon</strong> and work across AI engineering,
-      simulation, and data science. I care about the unglamorous parts that make AI
-      dependable: guardrails, tests, and keeping a human in the loop where it matters.
-    </p>
-    <div class="cta">
-      <a class="btn primary" href="mailto:yc7458@nyu.edu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-        Email me
-      </a>
-      <a class="btn" href="https://github.com/Yixtk" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
-        GitHub
-      </a>
-      <a class="btn" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-        LinkedIn
-      </a>
-    </div>
-  </header>
-
-  <section class="wrap reveal">
-    <div class="sec-head"><span class="sec-num">01</span><h2>Right now</h2></div>
-    <div class="now-grid">
-      <div class="now-card">
-        <div class="label">AI ENGINEERING</div>
-        <h3>Building LLM tools at JGM Innovation</h3>
-        <p>Including a web app that helps teachers in Peru plan lessons and prepare for certification.</p>
-      </div>
-      <div class="now-card">
-        <div class="label">RESEARCH</div>
-        <h3>Autonomous-driving safety at C2SMART</h3>
-        <p>Designing a work-zone benchmark in CARLA and studying PPO, TD3, and SAC.</p>
-      </div>
-      <div class="now-card">
-        <div class="label">RESEARCH</div>
-        <h3>Cities &amp; mental health at CUSP</h3>
-        <p>Causal discovery on what drives depression across U.S. metro areas.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="experience" class="wrap reveal">
-    <div class="sec-head"><span class="sec-num">02</span><h2>Experience</h2></div>
-
-    <div class="job">
-      <div class="when">May 2026 — Now</div>
-      <div>
-        <h3><span class="org">JGM Innovation</span></h3>
-        <div class="role">AI Engineer Intern · New York</div>
-        <ul>
-          <li>Develop Eclipse, an internal AI assistant (FastAPI, Azure) that automates staff workflows like drafting donor emails and reviewing ad performance.</li>
-          <li>Designed a five-layer safety system — blocklists, Azure Content Safety, prompt-injection detection, image validation, token inspection — with 30+ unit tests at near-100% branch coverage.</li>
-          <li>Kept ad metrics in deterministic code and gave the LLM only judgment calls, so reports never contain invented numbers; donor emails go out only after per-message human review.</li>
-          <li>Evaluated four small language models (Qwen3, Phi-4-mini, Llama 3.2, Gemma 3) for an offline classroom deployment in Peru.</li>
-        </ul>
-      </div>
+<main class="desk">
+  <!-- left column -->
+  <div class="left">
+    <div class="win bubble">
+      <div class="hi">Hi, I'm <span>Emily</span>!</div>
+      <div class="sub">CS @ NYU Tandon</div>
+      <svg class="tail" viewBox="0 0 8 6" shape-rendering="crispEdges" aria-hidden="true">
+        <rect class="o" x="0" y="0" width="8" height="2"/><rect class="o" x="1" y="2" width="6" height="2"/><rect class="o" x="2" y="4" width="4" height="1"/><rect class="o" x="3" y="5" width="2" height="1"/>
+        <rect class="f" x="1" y="0" width="6" height="1"/><rect class="f" x="2" y="1" width="4" height="2"/><rect class="f" x="3" y="3" width="2" height="1"/>
+      </svg>
     </div>
 
-    <div class="job">
-      <div class="when">Jun 2025 — Aug 2025<br>Jun 2026 — Now</div>
-      <div>
-        <h3><span class="org">C2SMART Transportation Center, NYU</span></h3>
-        <div class="role">Undergraduate Research Assistant</div>
-        <ul>
-          <li>Built a modified Unreal Engine and the CARLA C++ simulation core from source, and exposed it to Python through pybind11 bindings.</li>
-          <li>Designed custom CARLA scenarios, such as pedestrian behavior models, for a work-zone driving-safety benchmark.</li>
-        </ul>
+    <div class="win avatar">
+      <div class="win-bar"><span>me.png</span><span class="grip"></span><span class="wbtns"><span class="wbtn">_</span><span class="wbtn">□</span></span></div>
+      <div class="avatar-body">
+        <svg class="cloud" style="top:12%;left:8%" viewBox="0 0 43 13" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="0" width="12" height="4"/><rect x="4" y="4" width="30" height="5"/><rect x="0" y="9" width="43" height="4"/><rect x="24" y="2" width="8" height="2"/></svg>
+        <svg class="cloud" style="top:30%;right:4%;width:60px" viewBox="0 0 43 13" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="0" width="12" height="4"/><rect x="4" y="4" width="30" height="5"/><rect x="0" y="9" width="43" height="4"/></svg>
+        <!-- placeholder until assets/avatar.png exists -->
+        <svg class="ph" id="avatarPh" viewBox="0 0 40 50" shape-rendering="crispEdges" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+          <g fill="#3a2a5e" fill-opacity=".28">
+            <rect x="15" y="20" width="10" height="2"/><rect x="13" y="22" width="14" height="10"/><rect x="14" y="32" width="12" height="2"/>
+            <rect x="8" y="38" width="24" height="12"/><rect x="10" y="36" width="20" height="2"/>
+          </g>
+        </svg>
+        <img id="avatar" src="assets/avatar.png" alt="Pixel portrait of Emily" hidden>
       </div>
+      <div class="avatar-cap"><span class="status"><i></i>online</span><span>New York</span></div>
     </div>
+  </div>
 
-    <div class="job">
-      <div class="when">Jun 2026 — Now</div>
-      <div>
-        <h3><span class="org">Center for Urban Science + Progress, NYU</span></h3>
-        <div class="role">Independent Researcher</div>
-        <ul>
-          <li>Extending a peer-reviewed urban-scaling study of depression across 826 U.S. metro areas, with a pandas pipeline over four government data sources.</li>
-          <li>Added commute time and mode as new predictors; applied eigenvector spatial filtering and PC-algorithm causal discovery.</li>
-        </ul>
+  <!-- right column -->
+  <div class="right">
+    <section class="win intro" aria-labelledby="introTitle">
+      <div class="win-bar"><span>about_me.txt</span><span class="grip"></span><span class="wbtns"><span class="wbtn">_</span><span class="wbtn">□</span></span></div>
+      <div class="win-body">
+        <h1 id="introTitle">Use technology for <em>people's good.</em></h1>
+        <p>I'm Emily (Yi) Cui, a Computer Science student at <strong>NYU Tandon</strong>. I build software, AI tools and simulations, and I keep asking the same question: who does this actually help?</p>
+        <p>That's why I'm most drawn to:</p>
+        <div class="interests">
+          <div class="interest"><i style="background:var(--mint)"></i><b>Education</b><small>AI that helps people learn</small></div>
+          <div class="interest"><i style="background:var(--blue)"></i><b>Public Interest Tech</b><small>tech for the public, not just profit</small></div>
+          <div class="interest"><i style="background:var(--pink)"></i><b>Serious Games</b><small>games that carry a message</small></div>
+        </div>
       </div>
+    </section>
+
+    <div class="cards">
+      <section class="win skill" style="--c:var(--pink)">
+        <div class="win-bar"><span>skill_01.exe</span><span class="grip"></span></div>
+        <div class="win-body">
+          <div class="lbl">SKILL 01</div>
+          <h3>Movie Marathon</h3>
+          <div class="meter" data-lv="10" aria-hidden="true"></div>
+          <div class="lv"><span>level</span><b>MAX</b></div>
+        </div>
+      </section>
+      <section class="win skill" style="--c:var(--mint)">
+        <div class="win-bar"><span>skill_02.exe</span><span class="grip"></span></div>
+        <div class="win-body">
+          <div class="lbl">SKILL 02</div>
+          <h3>Strength Training</h3>
+          <div class="meter" data-lv="3" aria-hidden="true"></div>
+          <div class="lv"><span>level</span><b>BEGINNER</b></div>
+        </div>
+      </section>
+      <section class="win skill" style="--c:var(--yellow)">
+        <div class="win-bar"><span>skill_03.exe</span><span class="grip"></span></div>
+        <div class="win-body">
+          <div class="lbl">SKILL 03</div>
+          <h3>Chinese Food Cooking</h3>
+          <div class="meter" data-lv="6" aria-hidden="true"></div>
+          <div class="lv"><span>level</span><b>MEDIUM</b></div>
+        </div>
+      </section>
+      <section class="win contact" id="contact">
+        <div class="win-bar"><span>contact_me.exe</span><span class="grip"></span></div>
+        <div class="win-body">
+          <p>Say hi, I reply fast.</p>
+          <div class="row">
+            <a class="pbtn pink" href="mailto:yc7458@nyu.edu">Email</a>
+            <a class="pbtn blue" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="pbtn mint" href="https://github.com/Yixtk" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </section>
     </div>
+  </div>
 
-    <div class="job">
-      <div class="when">Jul 2026 — Aug 2026</div>
-      <div>
-        <h3><span class="org">Public Interest Technology, NYU</span></h3>
-        <div class="role">Student Technical Assistant</div>
-        <ul>
-          <li>Analyzed a 267-response, 18-school survey and built a Chart.js dashboard, then turned it into deliverables for students, faculty, and leadership.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="job">
-      <div class="when">Oct 2025 — Jan 2026</div>
-      <div>
-        <h3><span class="org">Epsilab</span></h3>
-        <div class="role">Full Stack Developer Intern</div>
-        <ul>
-          <li>Built a secure broker-account connection flow in React and TypeScript to support live trading.</li>
-          <li>Built a trading analytics dashboard with rolling volatility, drawdown, and Sharpe ratio.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="job">
-      <div class="when">Feb 2026 — Now</div>
-      <div>
-        <h3><span class="org">NYU TRIO Scholar Program</span></h3>
-        <div class="role">Peer Tutor</div>
-        <ul>
-          <li>Tutor students one-on-one in probability, discrete math, and intro programming.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects" class="wrap reveal">
-    <div class="sec-head"><span class="sec-num">03</span><h2>Projects</h2></div>
-    <div class="proj-grid">
-      <a class="proj" href="airbnb/">
-        <div class="top"><span class="kind">MACHINE LEARNING · INTERACTIVE</span><span class="arrow">↗</span></div>
-        <h3>Airbnb Albany: Occupancy Prediction</h3>
-        <span class="stat">AUC 0.77 → 0.90</span>
-        <p>A LightGBM + logistic regression ensemble predicting booking likelihood. Found and fixed a test-set leakage bug in early stopping with a time-ordered validation split.</p>
-        <div class="tags"><span class="tag">LightGBM</span><span class="tag">scikit-learn</span><span class="tag">pandas</span></div>
-      </a>
-      <a class="proj" href="https://github.com/Yixtk/UBS_FinAI" target="_blank" rel="noopener">
-        <div class="top"><span class="kind">LLM · FINANCE</span><span class="arrow">↗</span></div>
-        <h3>UBS Program: Term Sheet AI</h3>
-        <p>Extracts structured JSON from derivative term-sheet PDFs with an LLM, validates it in three layers, and feeds Python payoff engines for structured products.</p>
-        <div class="tags"><span class="tag">Python</span><span class="tag">LLM APIs</span><span class="tag">JSON Schema</span></div>
-      </a>
-      <a class="proj" href="https://github.com/Yixtk/PantryCycle" target="_blank" rel="noopener">
-        <div class="top"><span class="kind">FULL STACK · ML</span><span class="arrow">↗</span></div>
-        <h3>PantryCycle</h3>
-        <span class="stat">92.9% test accuracy</span>
-        <p>A web app that recommends recipes by menstrual-cycle phase, with a Python data-cleaning pipeline and a decision-tree classifier.</p>
-        <div class="tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span><span class="tag">Vercel</span></div>
-      </a>
-      <a class="proj" href="https://yixtk.github.io/NYC-Rent-Predictor/" target="_blank" rel="noopener">
-        <div class="top"><span class="kind">SIMULATION</span><span class="arrow">↗</span></div>
-        <h3>NYC Rent Predictor</h3>
-        <p>A Monte Carlo tool that runs 10,000 simulations to estimate rent by borough, unit type, and move-in month.</p>
-        <div class="tags"><span class="tag">JavaScript</span><span class="tag">Monte Carlo</span></div>
-      </a>
-      <a class="proj" href="https://github.com/Yixtk/Lighthouse" target="_blank" rel="noopener">
-        <div class="top"><span class="kind">GAME</span><span class="arrow">↗</span></div>
-        <h3>Lighthouse</h3>
-        <p>A p5.js survival game: you are the last lighthouse keeper, fighting off sea monsters and guiding ships to shore until dawn.</p>
-        <div class="tags"><span class="tag">p5.js</span><span class="tag">Game design</span></div>
-      </a>
-    </div>
-  </section>
-
-  <section class="wrap reveal">
-    <div class="sec-head"><span class="sec-num">04</span><h2>Toolbox</h2></div>
-    <dl class="skills">
-      <dt>Languages</dt>
-      <dd><span>Python</span><span>C++</span><span>TypeScript</span><span>JavaScript</span><span>SQL</span></dd>
-      <dt>AI &amp; ML</dt>
-      <dd><span>LLM pipelines</span><span>Guardrails</span><span>Model evaluation</span><span>scikit-learn</span><span>LightGBM</span><span>Causal inference</span></dd>
-      <dt>Backend &amp; Cloud</dt>
-      <dd><span>FastAPI</span><span>Azure</span><span>PostgreSQL</span><span>REST APIs</span><span>pytest</span></dd>
-      <dt>Frontend</dt>
-      <dd><span>React</span><span>HTML/CSS</span><span>Chart.js</span><span>p5.js</span></dd>
-      <dt>Simulation</dt>
-      <dd><span>CARLA</span><span>Unreal Engine</span><span>pybind11</span></dd>
-    </dl>
-  </section>
-
-  <section id="contact" class="wrap reveal">
-    <div class="contact-box">
-      <h2>Let's talk.</h2>
-      <p>I'm looking for Summer 2027 internships in software and AI engineering.</p>
-      <div class="cta">
-        <a class="btn primary" href="mailto:yc7458@nyu.edu">yc7458@nyu.edu</a>
-        <a class="btn" href="https://www.linkedin.com/in/yicui2027" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
+  <!-- bottom: folders -->
+  <section class="win dock" id="projects" aria-labelledby="projTitle">
+    <div class="win-bar"><span id="projTitle">C:\Emily\projects</span><span class="grip"></span><span class="wbtns"><span class="wbtn">_</span><span class="wbtn">□</span></span></div>
+    <div class="win-body">
+      <p class="hint">Click a folder to open it.</p>
+      <div class="folders" id="folders"></div>
     </div>
   </section>
 </main>
 
-<footer>© <span id="yr"></span> Emily Cui · Built by hand (and with a little AI help)</footer>
+<footer>© <span id="yr"></span> Emily Cui · made pixel by pixel</footer>
+
+<dialog class="win" id="dlg" aria-labelledby="dlgTitle">
+  <div class="win-bar"><span id="dlgTitle"></span><span class="grip"></span><span class="wbtns"><button class="wbtn" id="dlgClose" aria-label="Close window">×</button></span></div>
+  <div class="dlg-path" id="dlgPath"></div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
 
 <script>
-  document.getElementById('yr').textContent = new Date().getFullYear();
+const FOLDERS = [
+  { id: "game", name: "Game Design", c: "var(--pink)", d: "#e86aae", items: [
+    { t: "Lighthouse", tags: ["p5.js", "point & click"],
+      p: "You are the last lighthouse keeper, guiding ships home through the night. A small game about caring for an environment that is changing.",
+      links: [["Repo", "https://github.com/Yixtk/Lighthouse"]] }
+  ]},
+  { id: "data", name: "Data Science", c: "var(--blue)", d: "#5f97e8", items: [
+    { t: "Airbnb Occupancy Prediction", tags: ["LightGBM", "scikit-learn", "AUC 0.77 → 0.90"],
+      p: "A LightGBM + logistic regression ensemble that predicts booking likelihood for Albany listings. I found and fixed a test-set leakage bug with a time-ordered validation split.",
+      links: [["Open page", "airbnb/"]] }
+  ]},
+  { id: "full", name: "Full Stack", c: "var(--mint)", d: "#4fbf9e", items: [
+    { t: "PantryCycle", tags: ["React", "TypeScript", "PostgreSQL", "Vercel"],
+      p: "A web app that recommends recipes by menstrual-cycle phase. Includes a Python pipeline that cleans recipe data and a decision-tree classifier (92.9% test accuracy).",
+      links: [["Live site", "https://pantry-pals-bice.vercel.app"], ["Repo", "https://github.com/Yixtk/PantryCycle"]] },
+    { t: "Epsilab", meta: "Full Stack Developer Intern · Oct 2025 – Jan 2026", tags: ["React", "TypeScript"],
+      p: "Built a secure broker-account connection flow from scratch to support live trading, plus a trading dashboard with volatility, drawdown and Sharpe ratio." }
+  ]},
+  { id: "research", name: "Research", c: "var(--lilac)", d: "#8f72e6", items: [
+    { t: "Nano Digital Twin", meta: "C2SMART, NYU · Summer 2025", p: "A virtual traffic simulation of Downtown Brooklyn built on CARLA and Unreal Engine.", links: [["Read brief", "research/#digital-twin"]] },
+    { t: "Work-zone Safety", meta: "C2SMART, NYU · 2026 – now", p: "A benchmark for how safely self-driving agents handle construction work zones.", links: [["Read brief", "research/#workzone"]] },
+    { t: "Urban Scaling", meta: "CUSP, NYU · 2026 – now", p: "How city size, commuting and other urban factors relate to depression across U.S. metro areas.", links: [["Read brief", "research/#urban-scaling"]] },
+    { t: "ShopScout", meta: "NYU VIP · 2026 – now", p: "An assistive tool to help blind and low-vision shoppers use self-checkout machines.", links: [["Read brief", "research/#shopscout"]] },
+    { t: "Wind Turbine Maintenance", meta: "2026 – now", p: "When to repair offshore wind-turbine blades, balancing cost and worker safety.", links: [["Read brief", "research/#wind-turbine"]] }
+  ]},
+  { id: "learn", name: "AI for Learning", c: "var(--yellow)", d: "#e8b83c", items: [
+    { t: "CS Peer Mentor", meta: "NYU Tandon", p: "Mentoring fellow computer science students at NYU Tandon." },
+    { t: "Peer Tutor", meta: "NYU TRIO Scholar Program · Feb 2026 – now", p: "One-on-one tutoring with custom learning materials in probability, discrete math and intro programming." },
+    { t: "SyllaBuddy", dev: true, p: "An AI study companion for students, currently in development." }
+  ]},
+  { id: "ai", name: "AI", c: "var(--peach)", d: "#e88a5c", items: [
+    { t: "JGM Internal Chatbot (Eclipse)", meta: "JGM Innovation · AI Engineer Intern", tags: ["FastAPI", "Azure"],
+      p: "An internal AI assistant that automates staff workflows like drafting donor emails and reviewing ad performance, with a five-layer safety system and human review before anything is sent." },
+    { t: "Public Resume Reviewer", meta: "JGM Innovation", tags: ["Azure", "Firebase"],
+      p: "A public AI resume review tool, run as its own service and kept apart from the internal chatbot's secrets and data." },
+    { t: "UBS Term Sheet Analysis", tags: ["Python", "LLM APIs", "JSON Schema"],
+      p: "Turns derivative term-sheet PDFs into structured JSON with an LLM, checks it in three validation layers, and feeds Python payoff engines.",
+      links: [["Repo", "https://github.com/Yixtk/UBS_FinAI"]] }
+  ]}
+];
 
-  // theme toggle
-  const root = document.documentElement;
-  try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
-  document.getElementById('themeBtn').addEventListener('click', () => {
-    const dark = root.dataset.theme
-      ? root.dataset.theme === 'dark'
-      : matchMedia('(prefers-color-scheme: dark)').matches;
-    root.dataset.theme = dark ? 'light' : 'dark';
-    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
-  });
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+const fileName = n => n.replace(/\s+/g, "_");
 
-  // scroll reveal
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+// folders
+const grid = document.getElementById("folders");
+FOLDERS.forEach(f => {
+  const b = document.createElement("button");
+  b.className = "folder";
+  b.style.setProperty("--fc", f.c);
+  b.style.setProperty("--fd", f.d);
+  b.innerHTML = `<svg aria-hidden="true"><use href="#folder"/></svg><span class="name">${esc(f.name)}</span><span class="count">${f.items.length} item${f.items.length > 1 ? "s" : ""}</span>`;
+  b.addEventListener("click", () => openFolder(f));
+  grid.appendChild(b);
+});
+
+// folder window
+const dlg = document.getElementById("dlg");
+function openFolder(f) {
+  dlg.style.setProperty("--fc", f.c);
+  dlg.style.setProperty("--fd", f.d);
+  document.getElementById("dlgTitle").textContent = fileName(f.name) + ".dir";
+  document.getElementById("dlgPath").textContent = `C:\\Emily\\projects\\${fileName(f.name)}  ·  ${f.items.length} item${f.items.length > 1 ? "s" : ""}`;
+  document.getElementById("dlgBody").innerHTML = f.items.map(it => {
+    const tags = (it.tags || []).map(t => `<span class="chip">${esc(t)}</span>`).join(" ");
+    const links = (it.links || []).map(([l, h]) => {
+      const out = /^https?:/.test(h);
+      return `<a class="pbtn" href="${esc(h)}"${out ? ' target="_blank" rel="noopener"' : ""}>${esc(l)} ${out ? "↗" : "▸"}</a>`;
+    }).join("");
+    return `<article class="item">
+      <svg aria-hidden="true"><use href="#file"/></svg>
+      <div>
+        <h3>${esc(it.t)}${it.dev ? ' <span class="chip dev">developing</span>' : ""}</h3>
+        ${it.meta ? `<div class="meta">${esc(it.meta)}</div>` : ""}
+        <p>${esc(it.p)}</p>
+        ${tags ? `<div class="links">${tags}</div>` : ""}
+        ${links ? `<div class="links">${links}</div>` : ""}
+      </div>
+    </article>`;
+  }).join("");
+  dlg.showModal();
+  document.getElementById("dlgBody").scrollTop = 0;
+}
+document.getElementById("dlgClose").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+
+// skill meters
+document.querySelectorAll(".meter").forEach(m => {
+  const lv = +m.dataset.lv;
+  m.innerHTML = Array.from({ length: 10 }, (_, i) => `<i class="${i < lv ? "on" : ""}"></i>`).join("");
+});
+
+// avatar: show assets/avatar.png once it exists
+const av = document.getElementById("avatar");
+const showAv = () => { av.hidden = false; document.getElementById("avatarPh").style.display = "none"; };
+if (av.complete && av.naturalWidth) showAv(); else av.addEventListener("load", showAv);
+
+// clock + year
+const clock = document.getElementById("clock");
+const tick = () => { clock.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); };
+tick(); setInterval(tick, 15000);
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+// theme
+const root = document.documentElement;
+try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch (e) {}
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+});
 </script>
 </body>
 </html>

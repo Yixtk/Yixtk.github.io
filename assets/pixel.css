@@ -1,0 +1,151 @@
+/* Emily.OS — shared pixel styles (pastel lilac) */
+:root {
+  --bg: #e7ddfb;
+  --bg-dot: #d5c6f6;
+  --win: #fffaff;
+  --win-2: #f6f0ff;
+  --text: #2f2350;
+  --muted: #74679a;
+  --line: #3a2a5e;
+  --shadow: #3a2a5e;
+  --bar-ink: #3a2a5e;
+  --title-a: #ffb3dc;
+  --title-b: #c9b6ff;
+  --title-c: #a9d6ff;
+  --pink: #ff8fcb;
+  --mint: #86e0c4;
+  --blue: #8cbcff;
+  --yellow: #ffd96a;
+  --lilac: #b9a0ff;
+  --peach: #ffb48c;
+  --chip: #efe6ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1633;
+    --bg-dot: #2b2250;
+    --win: #2a2147;
+    --win-2: #231b3d;
+    --text: #f1eaff;
+    --muted: #b4a6dc;
+    --line: #c9b6ff;
+    --shadow: #0c0818;
+    --title-a: #f59bcd;
+    --title-b: #b49cff;
+    --title-c: #8fc4ff;
+    --chip: #362b5c;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d1633;
+  --bg-dot: #2b2250;
+  --win: #2a2147;
+  --win-2: #231b3d;
+  --text: #f1eaff;
+  --muted: #b4a6dc;
+  --line: #c9b6ff;
+  --shadow: #0c0818;
+  --title-a: #f59bcd;
+  --title-b: #b49cff;
+  --title-c: #8fc4ff;
+  --chip: #362b5c;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' shape-rendering='crispEdges'%3E%3Cg fill='%23ffffff' fill-opacity='.7'%3E%3Crect x='20' y='14' width='2' height='6'/%3E%3Crect x='18' y='16' width='6' height='2'/%3E%3Crect x='86' y='70' width='2' height='6'/%3E%3Crect x='84' y='72' width='6' height='2'/%3E%3Crect x='60' y='104' width='2' height='2'/%3E%3Crect x='104' y='22' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(var(--bg-dot) 1.5px, transparent 1.5px);
+  background-size: 120px 120px, 16px 16px;
+  color: var(--text);
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 21px;
+  line-height: 1.2;
+  -webkit-font-smoothing: none;
+}
+a { color: inherit; }
+img { image-rendering: pixelated; }
+.px { font-family: "Pixelify Sans", "VT323", monospace; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- menu bar ---------- */
+.menubar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 4px;
+  height: 38px; padding: 0 12px;
+  background: var(--win);
+  border-bottom: 3px solid var(--line);
+  font-family: "Pixelify Sans", monospace; font-size: 15px;
+}
+.menubar .brand { font-weight: 700; margin-right: 10px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+.menubar .brand i { width: 12px; height: 12px; background: var(--pink); border: 2px solid var(--line); display: inline-block; }
+.menubar a.m, .menubar button.m {
+  text-decoration: none; padding: 3px 9px; border: 0; background: none; color: inherit;
+  font: inherit; cursor: pointer;
+}
+.menubar a.m:hover, .menubar button.m:hover { background: var(--line); color: var(--win); }
+.menubar .spacer { flex: 1; }
+.menubar .clock { padding: 0 6px; font-variant-numeric: tabular-nums; }
+
+/* ---------- windows ---------- */
+.win {
+  background: var(--win);
+  border: 3px solid var(--line);
+  box-shadow: 6px 6px 0 var(--shadow);
+  position: relative;
+}
+.win-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 6px 4px 10px;
+  border-bottom: 3px solid var(--line);
+  background: linear-gradient(90deg, var(--title-a), var(--title-b) 55%, var(--title-c));
+  color: var(--bar-ink);
+  font-family: "Pixelify Sans", monospace; font-size: 15px; font-weight: 600;
+  user-select: none;
+}
+.win-bar .grip {
+  flex: 1; height: 10px; min-width: 20px;
+  background: repeating-linear-gradient(to bottom, rgba(58,42,94,.45) 0 2px, transparent 2px 4px);
+}
+.win-bar .wbtns { display: flex; gap: 4px; }
+.wbtn {
+  width: 18px; height: 18px; display: grid; place-items: center;
+  background: #fff; border: 2px solid var(--bar-ink); color: var(--bar-ink);
+  font: 700 12px/1 "Pixelify Sans", monospace; padding: 0;
+}
+button.wbtn { cursor: pointer; }
+button.wbtn:hover { background: var(--yellow); }
+.win-body { padding: 18px 20px; }
+
+/* ---------- buttons & chips ---------- */
+.pbtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: "Pixelify Sans", monospace; font-size: 15px; font-weight: 600;
+  color: #2f2350; text-decoration: none; cursor: pointer;
+  padding: 6px 12px;
+  background: var(--yellow);
+  border: 3px solid var(--line);
+  box-shadow: 3px 3px 0 var(--shadow);
+  transition: transform .08s steps(2), box-shadow .08s steps(2);
+}
+.pbtn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow); }
+.pbtn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--shadow); }
+.pbtn.pink { background: var(--pink); }
+.pbtn.mint { background: var(--mint); }
+.pbtn.blue { background: var(--blue); }
+.pbtn svg { width: 16px; height: 16px; }
+
+.chip {
+  display: inline-block; font-family: "Pixelify Sans", monospace; font-size: 13px;
+  padding: 1px 8px; background: var(--chip); border: 2px solid var(--line); color: var(--text);
+}
+.chip.dev { background: var(--yellow); color: #2f2350; }
+
+:focus-visible { outline: 3px dashed var(--pink); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
