@@ -71,6 +71,8 @@
   .addr code { flex: 1; min-width: 0; padding: 5px 8px; font: 500 13px/1.5 "IBM Plex Mono", monospace; color: var(--text);
                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .addr code::before { content: "> "; color: var(--muted); }
+  .addr code.idle { color: var(--muted); }
+  .addr button[hidden] { display: none; }
   .addr button { flex: none; border: 0; border-left: 3px solid var(--line); background: var(--yellow); color: #2f2350;
                  font: 600 13px "Pixelify Sans", monospace; padding: 0 12px; cursor: pointer; }
   .addr button:hover { background: var(--pink); }
@@ -262,8 +264,8 @@
             <a class="pbtn mint" href="https://github.com/Yixtk" target="_blank" rel="noopener" data-show="github.com/Yixtk">GitHub</a>
           </div>
           <div class="addr">
-            <code id="addrText">yc7458@nyu.edu</code>
-            <button type="button" id="addrCopy" aria-label="Copy address">Copy</button>
+            <code id="addrText" class="idle">welcome! hover a button ↑</code>
+            <button type="button" id="addrCopy" aria-label="Copy address" hidden>Copy</button>
           </div>
         </div>
       </section>
@@ -415,11 +417,23 @@ setStatus(); setInterval(setStatus, 60000);
 // contact: hovering a button shows its address; Copy copies whatever is shown
 const addrText = document.getElementById("addrText");
 const addrCopy = document.getElementById("addrCopy");
+const WELCOME = "welcome! hover a button ↑";
+let leaveTimer;
+const setAddr = t => {
+  clearTimeout(leaveTimer);
+  addrText.textContent = t || WELCOME;
+  addrText.classList.toggle("idle", !t);
+  addrCopy.hidden = !t;
+  addrCopy.textContent = "Copy"; addrCopy.classList.remove("done");
+};
 document.querySelectorAll(".contact [data-show]").forEach(a => {
-  const show = () => { addrText.textContent = a.dataset.show; addrCopy.textContent = "Copy"; addrCopy.classList.remove("done"); };
-  a.addEventListener("mouseenter", show);
-  a.addEventListener("focus", show);
+  a.addEventListener("mouseenter", () => setAddr(a.dataset.show));
+  a.addEventListener("focus", () => setAddr(a.dataset.show));
 });
+// keep the address while the mouse moves down to Copy; go back to welcome once it leaves the card
+const contactBody = document.querySelector(".contact .win-body");
+contactBody.addEventListener("mouseleave", () => { leaveTimer = setTimeout(() => setAddr(""), 250); });
+contactBody.addEventListener("focusout", e => { if (!contactBody.contains(e.relatedTarget)) setAddr(""); });
 addrCopy.addEventListener("click", async () => {
   const t = addrText.textContent;
   const ok = navigator.clipboard
