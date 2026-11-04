@@ -235,7 +235,7 @@
     </div>
 
     <div class="win avatar">
-      <div class="win-bar"><span>me.png</span><span class="grip"></span><span class="wbtns"><span class="wbtn">_</span><span class="wbtn">□</span></span></div>
+      <div class="win-bar"><span>me.png</span><span class="grip"></span><span class="wbtns"><button class="wbtn eggBtn" aria-label="Minimize">_</button><button class="wbtn eggBtn" aria-label="Maximize">□</button></span></div>
       <div class="avatar-body">
         <svg class="cloud" style="top:12%;left:8%" viewBox="0 0 43 13" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="0" width="12" height="4"/><rect x="4" y="4" width="30" height="5"/><rect x="0" y="9" width="43" height="4"/><rect x="24" y="2" width="8" height="2"/></svg>
         <svg class="cloud" style="top:30%;right:4%;width:60px" viewBox="0 0 43 13" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="0" width="12" height="4"/><rect x="4" y="4" width="30" height="5"/><rect x="0" y="9" width="43" height="4"/></svg>
@@ -356,7 +356,7 @@
       <div class="row"><span id="npTime">0:00 / 3:58</span><span class="eq"><b></b><b></b><b></b><b></b></span></div>
       <a class="pbtn pink" href="https://open.spotify.com/search/heat%20waves%20glass%20animals" target="_blank" rel="noopener">▶ Listen</a>
     </div>
-    <div class="msg">You found the easter egg! Glass Animals is one of my favorite bands. I love their dreamy, Y2K-ish cover art.</div>
+    <div class="msg">You found the easter egg! Glass Animals is one of my favorite bands. I love their dreamy rhythms, and the 2D pixel art in their Tokyo Drifting music video.</div>
   </div>
 </aside>
 
@@ -547,7 +547,7 @@ document.getElementById("themeBtn").addEventListener("click", () => {
   try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
 });
 
-// easter egg: type "heatwaves", tap me.png 5 times, or click the footer sun
+// easter egg: me.png's _ / □ buttons, skills clicked 01→02→03, typing "heatwaves", tapping me.png 5×, or the footer sun
 (() => {
   // pixel sun: half circle (sitting on the horizon) with retro stripe gaps
   const sun = document.getElementById("sunSvg"), R = 16;
@@ -586,6 +586,14 @@ document.getElementById("themeBtn").addEventListener("click", () => {
     typed = (typed + e.key.toLowerCase()).replace(/[^a-z]/g, "").slice(-9);
     if (typed === "heatwaves") on();
   });
+
+  document.querySelectorAll(".eggBtn").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); root.classList.contains("heat") ? off() : on(); }));
+
+  let next = 0;
+  document.querySelectorAll(".skill").forEach((card, i, all) => card.addEventListener("click", () => {
+    next = i === next ? next + 1 : (i === 0 ? 1 : 0);
+    if (next === all.length) { next = 0; on(); }
+  }));
 
   let taps = [];
   document.querySelector(".avatar-body").addEventListener("click", () => {
