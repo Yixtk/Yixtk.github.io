@@ -119,6 +119,45 @@
   .item .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .item .links .pbtn { font-size: 14px; padding: 4px 10px; }
 
+  /* ---------- easter egg: heat waves ---------- */
+  .egg-sun { background: none; border: 0; padding: 0 2px; font: inherit; color: inherit; cursor: pointer; opacity: .7; }
+  .egg-sun:hover { opacity: 1; color: #ff7a3d; }
+  #sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .6s steps(4);
+    background: linear-gradient(180deg, #2a0f5c 0%, #6a1b9a 30%, #d63384 52%, #ff7a3d 64%, #ffc15e 70%, #3b1450 70.5%, #1d0b33 100%); }
+  #sky svg.sea { position: absolute; left: 50%; top: 70%; transform: translate(-50%, -100%); width: min(46vmin, 380px); height: auto; filter: url(#shimmer); }
+  #sky .lines { position: absolute; left: 0; right: 0; top: 70.5%; bottom: 0;
+    background: repeating-linear-gradient(180deg, rgba(255,140,90,.35) 0 3px, transparent 3px 14px); filter: url(#shimmer); }
+  #sky .spark { position: absolute; width: 6px; height: 6px; background: #ffe7a8; box-shadow: 0 0 0 2px rgba(255,231,168,.25); animation: twinkle 1.6s steps(2) infinite; }
+  @keyframes twinkle { 50% { opacity: .15; } }
+  :root.heat.heat {
+    --bg: #2a0f5c; --bg-dot: transparent;
+    --win: #fff4ec; --win-2: #ffe9dc; --text: #3b1640; --muted: #6e3a63;
+    --line: #3b1640; --shadow: #1d0b33; --bar-ink: #3b1640; --chip: #ffe0d0;
+    --title-a: #ff7a3d; --title-b: #ff5fa2; --title-c: #b06cff;
+  }
+  :root.heat body { background: none; }
+  :root.heat #sky { opacity: 1; }
+  :root.heat footer { color: #ffd9c2; }
+  :root.heat .hint { color: var(--muted); }
+
+  .np { position: fixed; right: 18px; bottom: 18px; z-index: 30; width: min(330px, calc(100% - 32px)); display: none; }
+  :root.heat .np { display: block; animation: pop .25s steps(3); }
+  .np .win-body { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: center; padding: 12px 14px; }
+  .np .tape { width: 76px; height: 50px; }
+  .np .reel { transform-box: fill-box; transform-origin: center; animation: spin 1.2s steps(8) infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .np .song { font-family: "Pixelify Sans", monospace; font-weight: 700; font-size: 18px; line-height: 1.1; }
+  .np .artist { color: var(--muted); font-size: 18px; }
+  .np .prog { height: 10px; border: 2px solid var(--line); background: var(--win-2); margin: 6px 0 2px; }
+  .np .prog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ff7a3d, #ff5fa2); }
+  .np .row { display: flex; justify-content: space-between; align-items: center; font-size: 16px; color: var(--muted); }
+  .np .eq { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
+  .np .eq b { width: 4px; background: #ff5fa2; animation: eq .8s steps(4) infinite; }
+  .np .eq b:nth-child(2) { animation-delay: -.3s; background: #ff7a3d; } .np .eq b:nth-child(3) { animation-delay: -.55s; background: #b06cff; } .np .eq b:nth-child(4) { animation-delay: -.15s; }
+  @keyframes eq { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+  .np .pbtn { font-size: 13px; padding: 3px 9px; margin-top: 6px; }
+  .np .msg { grid-column: 1 / -1; font-size: 17px; color: var(--muted); border-top: 2px dashed var(--line); padding-top: 6px; }
+
   footer { text-align: center; color: var(--muted); padding: 0 16px 36px; font-size: 18px; }
 
   @media (max-width: 880px) {
@@ -285,7 +324,41 @@
   </section>
 </main>
 
-<footer>© <span id="yr"></span> Emily Cui · made pixel by pixel</footer>
+<footer>© <span id="yr"></span> Emily Cui · made pixel by pixel <button class="egg-sun" id="eggSun" title="feeling warm?" aria-label="Easter egg">☀</button></footer>
+
+<!-- easter egg: a little tribute to Glass Animals' "Heat Waves" (original pixel art) -->
+<div id="sky" aria-hidden="true">
+  <svg width="0" height="0" style="position:absolute"><filter id="shimmer" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.006 0.08" numOctaves="1" seed="3">
+      <animate attributeName="baseFrequency" dur="5s" values="0.006 0.08;0.006 0.12;0.006 0.08" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+  </filter></svg>
+  <svg class="sea" id="sunSvg" viewBox="0 0 32 17" shape-rendering="crispEdges"></svg>
+  <div class="lines"></div>
+</div>
+
+<aside class="win np" id="np" aria-label="Now playing">
+  <div class="win-bar"><span>now_playing.exe</span><span class="grip"></span><span class="wbtns"><button class="wbtn" id="npClose" aria-label="Turn off heat waves">×</button></span></div>
+  <div class="win-body">
+    <svg class="tape" viewBox="0 0 38 25" shape-rendering="crispEdges" aria-hidden="true">
+      <rect x="0" y="0" width="38" height="25" fill="#3b1640"/><rect x="2" y="2" width="34" height="21" fill="#ff8a5c"/>
+      <rect x="2" y="2" width="34" height="5" fill="#ffc15e"/><rect x="2" y="7" width="34" height="2" fill="#ff5fa2"/>
+      <rect x="7" y="10" width="24" height="8" fill="#3b1640"/>
+      <g class="reel"><rect x="9" y="11" width="6" height="6" fill="#fff4ec"/><rect x="11" y="11" width="2" height="6" fill="#3b1640"/><rect x="9" y="13" width="6" height="2" fill="#3b1640"/></g>
+      <g class="reel"><rect x="23" y="11" width="6" height="6" fill="#fff4ec"/><rect x="25" y="11" width="2" height="6" fill="#3b1640"/><rect x="23" y="13" width="6" height="2" fill="#3b1640"/></g>
+      <rect x="10" y="20" width="18" height="3" fill="#3b1640"/>
+    </svg>
+    <div>
+      <div class="song">Heat Waves</div>
+      <div class="artist">Glass Animals</div>
+      <div class="prog"><i id="npBar"></i></div>
+      <div class="row"><span id="npTime">0:00 / 3:58</span><span class="eq"><b></b><b></b><b></b><b></b></span></div>
+      <a class="pbtn pink" href="https://open.spotify.com/search/heat%20waves%20glass%20animals" target="_blank" rel="noopener">▶ Listen</a>
+    </div>
+    <div class="msg">You found the easter egg! Glass Animals is one of my favorite bands. I love their dreamy, Y2K-ish cover art.</div>
+  </div>
+</aside>
 
 <dialog class="win" id="dlg" aria-labelledby="dlgTitle">
   <div class="win-bar"><span id="dlgTitle"></span><span class="grip"></span><span class="wbtns"><button class="wbtn" id="dlgClose" aria-label="Close window">×</button></span></div>
@@ -473,6 +546,53 @@ document.getElementById("themeBtn").addEventListener("click", () => {
   root.dataset.theme = dark ? "light" : "dark";
   try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
 });
+
+// easter egg: type "heatwaves", tap me.png 5 times, or click the footer sun
+(() => {
+  // pixel sun: half circle (sitting on the horizon) with retro stripe gaps
+  const sun = document.getElementById("sunSvg"), R = 16;
+  let px = '<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset=".6" stop-color="#ffb05e"/><stop offset="1" stop-color="#ff5fa2"/></linearGradient></defs><g fill="url(#sg)">';
+  for (let y = 0; y < 17; y++) {
+    if ([10, 13, 15].includes(y)) continue;
+    const dy = R - y - .5, w = Math.round(Math.sqrt(Math.max(0, R * R - dy * dy)));
+    if (w) px += `<rect x="${R - w}" y="${y}" width="${2 * w}" height="1"/>`;
+  }
+  sun.innerHTML = px + "</g>";
+  const sky = document.getElementById("sky");
+  for (let i = 0; i < 14; i++) {
+    const sp = document.createElement("i"); sp.className = "spark";
+    sp.style.cssText = `left:${(i * 37 + 11) % 97}%;top:${(i * 23 + 5) % 55}%;animation-delay:${-(i % 5) * .3}s`;
+    sky.appendChild(sp);
+  }
+
+  const LEN = 238, bar = document.getElementById("npBar"), time = document.getElementById("npTime");
+  let t0 = 0, timer = 0;
+  const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  const step = () => { const s = Math.floor((Date.now() - t0) / 1000) % LEN; bar.style.width = (s / LEN * 100) + "%"; time.textContent = `${fmt(s)} / ${fmt(LEN)}`; };
+  const on = () => {
+    if (root.classList.contains("heat")) return;
+    root.classList.add("heat"); t0 = Date.now(); step(); timer = setInterval(step, 1000);
+    try { window.goatcounter && goatcounter.count && goatcounter.count({ path: "easter-egg-heatwaves", title: "Found the Heat Waves egg", event: true }); } catch (e) {}
+  };
+  const off = () => { root.classList.remove("heat"); clearInterval(timer); };
+
+  document.getElementById("eggSun").addEventListener("click", () => root.classList.contains("heat") ? off() : on());
+  document.getElementById("npClose").addEventListener("click", off);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !dlg.open) off(); });
+
+  let typed = "";
+  document.addEventListener("keydown", e => {
+    if (e.target.closest?.("input, textarea, [contenteditable]") || e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).replace(/[^a-z]/g, "").slice(-9);
+    if (typed === "heatwaves") on();
+  });
+
+  let taps = [];
+  document.querySelector(".avatar-body").addEventListener("click", () => {
+    const now = Date.now(); taps = taps.filter(t => now - t < 2000); taps.push(now);
+    if (taps.length >= 5) { taps = []; on(); }
+  });
+})();
 </script>
 <script data-goatcounter="https://emilycui.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
